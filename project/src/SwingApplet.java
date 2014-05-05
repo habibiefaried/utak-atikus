@@ -272,7 +272,7 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		
 		worldPane.add(chooseWorld(), BorderLayout.CENTER);
 		//worldPane.add(customWorld(), BorderLayout.EAST);
-		JButton startbutt = new JButton("Click here to start!");
+		JButton startbutt = new JButton("Momo to start!");
 		startbutt.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				// selected world type, choose action

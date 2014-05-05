@@ -1,11 +1,9 @@
 /CatAndMouseGame.class
 /CatAndMouseWorld.class
-/README.md
 /RLController.class
 /RLPolicy.class
 /RLWorld.class
 /RLearner.class
-/Spesifikasi Tugas Besar 2 (part 2) IF3170 (2014).pdf
 /SwingApplet$1.class
 /SwingApplet$10.class
 /SwingApplet$11.class
@@ -22,14 +20,7 @@
 /boardContainer.class
 /boardObject.class
 /boardPanel.class
-/cat.gif
-/catmouse.html
 /chartPanel.class
-/cheese.gif
-/floor.gif
-/java.policy.applet
-/main.html
-/mouse.gif
 /sampleWorlds.class
-/wall.gif
 /wallSample.class
+/MapReader.class
