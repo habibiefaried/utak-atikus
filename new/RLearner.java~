@@ -97,7 +97,7 @@ public class RLearner {
 	public void runEpoch() {
 		//
 		// Reset state to start position defined by the world.
-		state = thisWorld.resetState();
+		state = thisWorld.resetState(this.jmlCheese);
 		
 		switch( learningMethod ) {
 	    
