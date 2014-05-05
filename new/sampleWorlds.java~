@@ -1,7 +1,6 @@
 import java.util.Vector;
 
 class sampleWorlds {
-	/* Baca dari teks: Modif 1*/
 	public Vector samples;
 	
 	public sampleWorlds() {
