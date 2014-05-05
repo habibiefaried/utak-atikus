@@ -46,6 +46,8 @@ public class RLearner {
     boolean random = false;
 	Runnable a;
 
+    public int jmlCheese;
+
     public RLearner( RLWorld world) {
 		// Getting the world from the invoking method.
 		thisWorld = world;

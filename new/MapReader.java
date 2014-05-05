@@ -55,10 +55,8 @@ public class MapReader {
         try {
             fis = new FileInputStream("map.txt");
             reader = new BufferedReader(new InputStreamReader(fis));
-         
+         	String line = "lol";
             System.out.println("Reading Maps...");
-         
-            String line = reader.readLine();
             while(line != null){
                 line = reader.readLine();
 		parseIntoWallsMap(line,jmlKolom);
@@ -72,7 +70,7 @@ public class MapReader {
          
         } finally {
             try {
-		//jmlKolom--; //jumlah kolom dikurangin(harusnya kyk gini)
+		jmlKolom--; //jumlah kolom dikurangin(harusnya kyk gini)
                 reader.close();
                 fis.close();
 		copyMap(); //copy map

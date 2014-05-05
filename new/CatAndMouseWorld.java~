@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.*;
 
 public class CatAndMouseWorld implements RLWorld{
 	public int bx, by;
@@ -34,26 +35,29 @@ public class CatAndMouseWorld implements RLWorld{
 	public boolean[][] walls;
 
 	/* Kode tambahan */
+	/* MODIFIKASI */
 	private void debug(String msg) { System.out.println("DEBUG : "+msg); }
-
+	public ArrayList<Integer> modified_chx = new ArrayList<Integer>();
+	public ArrayList<Integer> modified_chy = new ArrayList<Integer>();
 	/* End of kode tambahan */
 
-	public CatAndMouseWorld(int x, int y, int numWalls) {
+	public CatAndMouseWorld(int jmlCheese, int x, int y, int numWalls) {
 		bx = x;
 		by = y;
 		makeWalls(x,y,numWalls);
 		cheeseReward = x + y; //Kode tambahan
 		deathPenalty = x + y; //Kode tambahan
-		resetState();
+		resetState(jmlCheese);
 	}
 	
-	public CatAndMouseWorld(int x, int y, boolean[][] newwalls) {
+	public CatAndMouseWorld(int jmlCheese, int x, int y, boolean[][] newwalls) {
 		bx = x;
 		by = y;
 		
 		walls = newwalls;
 		
-		resetState();
+		resetState(jmlCheese);
+		System.out.println("Construktor : "+jmlCheese);
 	}
 
 	/******* RLWorld interface functions ***********/
@@ -137,10 +141,10 @@ public class CatAndMouseWorld implements RLWorld{
 	}
 
 	public boolean endState() { return endGame(); }
-	public int[] resetState() { 
+	public int[] resetState(int jmlCheese) { 
 		catscore = 0;
 		mousescore = 0;
-		setRandomPos(); 
+		setRandomPos(jmlCheese); 
 		return getState();
 	}
 		
@@ -174,10 +178,22 @@ public class CatAndMouseWorld implements RLWorld{
 		return newReward;		
 	}
 	
-	public void setRandomPos() {
+	private void initAllCheese(int jmlCheese) {
+		modified_chx = new ArrayList<Integer>();
+		modified_chy = new ArrayList<Integer>();
+		for (int i=0;i<jmlCheese;i++) {
+			modified_chx.add(0); //diinisialisasi
+			modified_chy.add(0); //diinisialisasi
+		}
+	}
+
+	public void setRandomPos(int jmlCheese) {
+		/* MODIFIKASI */
+		System.out.println("Jumlah keju : "+jmlCheese);
+		/* */
 		Dimension d = getRandomPos();
-		cx = d.width; //random
-		cy = d.height; //random
+		cx = d.width; //random (NAH INI)
+		cy = d.height; //random (NAH INI)
 		d = getRandomPos();
 		mx = d.width;
 		my = d.height;
@@ -187,6 +203,14 @@ public class CatAndMouseWorld implements RLWorld{
 		d = getRandomPos();
 		hx = d.width;
 		hy = d.height;
+
+		initAllCheese(jmlCheese);
+
+		for (int i=0;i<jmlCheese;i++) {
+			d = getRandomPos();
+			modified_chx.set(i,d.width);
+			modified_chy.set(i,d.height);
+		}		
 	}
 
 	boolean legal(int x, int y) {

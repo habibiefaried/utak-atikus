@@ -84,7 +84,6 @@ public class CatAndMouseGame extends Thread {
 	public Dimension getMouse() { return new Dimension(world.mx, world.my); }
 	public Dimension getCat() { return new Dimension(world.cx, world.cy); }
 	public Dimension getCheese() { return new Dimension(world.chx, world.chy); }
-
 	public Dimension getModifiedCheese(int i){return new Dimension(world.modified_chx.get(i),world.modified_chy.get(i));}
 
 	public Dimension getHole() { return new Dimension(world.hx, world.hy); }

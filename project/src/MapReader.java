@@ -28,7 +28,7 @@ public class MapReader {
                     temporaryMap[baris][Kolom] = (boolean) true;
                 }
                 baris++;
-                }
+            }
             jmlBaris = baris;
         }
     }

@@ -16,6 +16,10 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 	static final long DELAY=500;
 	static int MAXX=400, MAXY=400;
 	
+	/* Modifikasi */
+	public static int jmlCheese = 3;
+	/* Modifikasi */
+
 	CatAndMouseGame game;
 	CatAndMouseWorld trainWorld, playWorld; // seperate world from playing world
 	RLController rlc;
@@ -57,8 +61,10 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 	chartPanel graphPanel;
 	JLabel winPerc;
 			
-	boardObject cat, mouse, cheese, back, hole, wall;
-
+	boardObject cat, cat2, mouse, cheese, cheese2, back, hole, wall;
+	/* MODIFIKASI */
+	public ArrayList<boardObject> modified_cheese = new ArrayList<boardObject>();
+	/* */
 					
 	public SwingApplet() {
 		getRootPane().putClientProperty("defeatSystemEventQueueCheck",Boolean.TRUE);
@@ -80,12 +86,19 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 
 		// set up board objects
 		cat = new boardObject(catImg);
+		cat2 = new boardObject(catImg); //(disini)
 		mouse = new boardObject(mouseImg);
 		cheese = new boardObject(cheeseImg);
+		cheese2 = new boardObject(cheeseImg);
 		back = new boardObject(floorImg);
 		hole = new boardObject(Color.orange);
 		wall = new boardObject(wallImg);
 		
+		/* MODIFIKASI (set up board objects) */
+		for (int icat=0;icat<jmlCheese;icat++) {
+			modified_cheese.add(new boardObject(cheeseImg));
+		}
+		/* */
 		// setup content panes
 		tabbedPane = new JTabbedPane();
 		
@@ -112,19 +125,19 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 	}
 
 	public void worldInit(int xdim, int ydim, int numwalls) { 
-		trainWorld = new CatAndMouseWorld(xdim, ydim,numwalls);
+		trainWorld = new CatAndMouseWorld(jmlCheese,xdim, ydim,numwalls);// MODIFIKASI
 		gameInit(xdim,ydim);
 	}
-	public void worldInit(boolean[][] givenWalls) {
+	public void worldInit(boolean[][] givenWalls) { //yang ini yang biasa dipilih
 		int xdim = givenWalls.length, ydim = givenWalls[0].length;
-		trainWorld = new CatAndMouseWorld(xdim, ydim,givenWalls);
+		trainWorld = new CatAndMouseWorld(jmlCheese,xdim, ydim,givenWalls); //MODIFIKASI
 		gameInit(xdim,ydim);		
 	}
 	private void gameInit(int xdim, int ydim) {
 		// disable this pane
 		tabbedPane.setEnabledAt(0,false);
 		
-		playWorld = new CatAndMouseWorld(xdim, ydim,trainWorld.walls);
+		playWorld = new CatAndMouseWorld(jmlCheese,xdim, ydim,trainWorld.walls); //MODIFIKASI
 
 		bp.setDimensions(xdim, ydim);
 		
@@ -186,6 +199,10 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		bp.setSquare(cheese, game.getCheese());
 		bp.setSquare(mouse, game.getMouse());
 		bp.setSquare(cat, game.getCat());
+
+		for (int i=0;i<jmlCheese;i++) {
+			bp.setSquare(modified_cheese.get(i),game.getModifiedCheese(i));
+		}
 		//bp.setSquare(hole, game.getHole());
 					
 		// display text representation
@@ -650,6 +667,7 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		
 		// score labels
 		ImageIcon cat = new ImageIcon(catImg);
+		ImageIcon cat2 = new ImageIcon(catImg); //MODIF : CAT 2
 		ImageIcon mouse = new ImageIcon(mouseImg);
 		mousescorelabel = new JLabel(MS_TEXT, mouse, JLabel.RIGHT);
 		catscorelabel = new JLabel(CS_TEXT, cat, JLabel.RIGHT);
