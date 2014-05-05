@@ -14,7 +14,7 @@ class sampleWorlds {
 		title = "Wall dari map";
 		new MapReader();
 		
-		boolean[][] wallsA = MapReader.wallsMap();
+		boolean[][] wallsA = MapReader.wallsMap;
 
 		samples.addElement(new wallSample(wallsA, title));
 							  

@@ -46,6 +46,8 @@ public class RLearner {
     boolean random = false;
 	Runnable a;
 
+    public int jmlCheese;
+
     public RLearner( RLWorld world) {
 		// Getting the world from the invoking method.
 		thisWorld = world;
@@ -95,7 +97,7 @@ public class RLearner {
 	public void runEpoch() {
 		//
 		// Reset state to start position defined by the world.
-		state = thisWorld.resetState();
+		state = thisWorld.resetState(this.jmlCheese);
 		
 		switch( learningMethod ) {
 	    

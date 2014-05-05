@@ -15,6 +15,8 @@ public class RLController extends Thread {
 	public RLController(SwingApplet a, RLWorld world, long waitperiod) {
 		// create RLearner
 		learner = new RLearner(world);
+		System.out.println("RL Controller jmlcheese : "+a.jmlCheese);
+		learner.jmlCheese = a.jmlCheese; //MODIFIKASI
 		this.a = a;
 		delay = waitperiod;
 	}
