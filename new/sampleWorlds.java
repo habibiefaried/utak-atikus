@@ -11,12 +11,11 @@ class sampleWorlds {
 		
 		// sample wall sets:
 		
-		title = "Wall (5x5)";
-		boolean[][] wallsA = {{false, false, false, false, false},
-		         {false, false, true , false, false},
-		         {false, false, true , false, false},
-		         {false, false, true , false, false},
-		         {false, false, false, false, false}};
+		title = "Wall dari map";
+		new MapReader();
+		
+		boolean[][] wallsA = MapReader.wallsMap;
+
 		samples.addElement(new wallSample(wallsA, title));
 							  
 		title = "Cross (5x5)";
