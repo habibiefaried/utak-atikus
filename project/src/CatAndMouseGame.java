@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.util.Random;
+
 import javax.swing.*;
 
 public class CatAndMouseGame extends Thread {
@@ -6,6 +8,7 @@ public class CatAndMouseGame extends Thread {
 	SwingApplet a;
 	RLPolicy policy;
 	CatAndMouseWorld world;
+	
 	static final int GREEDY=0, SMART=1; // type of mouse to use
 	int mousetype = SMART;
 	
@@ -50,7 +53,15 @@ public class CatAndMouseGame extends Thread {
 			if (mousetype == GREEDY) {
 				action = world.mouseAction();
 			} else if (mousetype == SMART) {
-				action = policy.getBestAction(world.getState());
+//				action = policy.getBestAction(world.getState());
+			    Random rnd = new Random();
+			    action = rnd.nextInt(3);
+			    switch (action) {
+			        case 0: System.out.println("<"); break;
+			        case 1: System.out.println("^"); break;
+			        case 2: System.out.println(">"); break;
+			    }
+			    
 			} else {
 				System.err.println("Invalid mouse type:"+mousetype);
 			}
@@ -80,7 +91,7 @@ public class CatAndMouseGame extends Thread {
 	/* end Thread Functions */
 
 	public void setPolicy(RLPolicy p) {	policy = p; }
-	
+	public Integer getArah() { return world.arah; }
 	public Dimension getMouse() { return new Dimension(world.mx, world.my); }
 	public Dimension getCat() { return new Dimension(world.cx, world.cy); }
 	public Dimension getCheese() { return new Dimension(world.chx, world.chy); }
