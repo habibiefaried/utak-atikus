@@ -187,7 +187,19 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		bp.setSquare(mouse, game.getMouse());
 		bp.setSquare(cat, game.getCat());
 		//bp.setSquare(hole, game.getHole());
-					
+		
+		String direction = "";
+		switch (game.getArah()) {
+		    case 0: direction = "Atas";break;
+		    case 1: direction = "Kanan Atas";break;
+		    case 2: direction = "Kanan";break;
+		    case 3: direction = "Kanan Bawah";break;
+		    case 4: direction = "Bawah";break;
+		    case 5: direction = "Kiri Bawah";break;
+		    case 6: direction = "Kiri";break;
+		    case 7: direction = "Kiri Atas";break;
+		}
+		mousescorelabel.setText(MS_TEXT+" "+Integer.toString(mousescore) + " " + direction);
 		// display text representation
 		//System.out.println(bp);
 		bp.repaint();
