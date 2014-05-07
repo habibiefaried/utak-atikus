@@ -290,7 +290,7 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 			public void actionPerformed(ActionEvent e) {
 				// selected world type, choose action
 				if (sampleWorld) {
-					worldInit(selectedWalls);
+					worldInit(selectedWalls); //selectedWalls diperoleh dari chooseWorld
 				} else if (designWorld) {
 					// custom designed world
 				
