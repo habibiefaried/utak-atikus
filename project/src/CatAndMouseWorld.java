@@ -1,10 +1,14 @@
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class CatAndMouseWorld implements RLWorld {
     public int bx, by;
 
     public int mx, my;
-    public int cx, cy;
+    public ArrayList<Point> catCoord = new ArrayList<Point>();
+    public int catTotal = 3;
+//    public int cx, cy;
     public int chx, chy;
     public int hx, hy;
     public boolean gotCheese = false;
@@ -34,6 +38,12 @@ public class CatAndMouseWorld implements RLWorld {
         cheeseReward = x + y; // Kode tambahan
         deathPenalty = x + y; // Kode tambahan
         resetState();
+        catCoord.clear();
+        Random rnd = new Random();
+        for (int i = 0; i < 3; i++) {
+            System.out.println("salvian");
+            catCoord.add(new Point(rnd.nextInt(8), rnd.nextInt(8)));
+        }
     }
 
     public CatAndMouseWorld(int x, int y, boolean[][] newwalls) {
@@ -43,6 +53,12 @@ public class CatAndMouseWorld implements RLWorld {
         walls = newwalls;
 
         resetState();
+        catCoord.clear();
+        Random rnd = new Random();
+        for (int i = 0; i < 3; i++) {
+            System.out.println("salvian");
+            catCoord.add(new Point(rnd.nextInt(8), rnd.nextInt(8)));
+        }
     }
 
     /******* RLWorld interface functions ***********/
@@ -184,8 +200,8 @@ public class CatAndMouseWorld implements RLWorld {
         stateArray = new int[NUM_OBJECTS];
         stateArray[0] = mx;
         stateArray[1] = my;
-        stateArray[2] = cx;
-        stateArray[3] = cy;
+        stateArray[2] = 0;
+        stateArray[3] = 0;
         stateArray[4] = chx;
         stateArray[5] = chy;
         return stateArray;
@@ -197,18 +213,19 @@ public class CatAndMouseWorld implements RLWorld {
             mousescore++;
             newReward += cheeseReward;
         }
-        if ((cx == mx) && (cy == my)) {
-            catscore++;
-            newReward -= deathPenalty;
-        }
+//        if ((cx == mx) && (cy == my)) {
+//            catscore++;
+//            newReward -= deathPenalty;
+//        }
         // if ((mx==hx)&&(my==hy)&&(gotCheese)) newReward += 100;
         return newReward;
     }
 
     public void setRandomPos() {
         Dimension d = getRandomPos();
-        cx = d.width;
-        cy = d.height;
+//        cx = d.width;
+//        cy = d.height;
+        
         d = getRandomPos();
         mx = d.width;
         my = d.height;
@@ -226,7 +243,8 @@ public class CatAndMouseWorld implements RLWorld {
 
     boolean endGame() {
         // return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
-        return ((cx == mx) && (cy == my));
+//        return ((cx == mx) && (cy == my));
+        return false;
     }
 
     Dimension getRandomPos() {
@@ -272,9 +290,9 @@ public class CatAndMouseWorld implements RLWorld {
     }
 
     void moveCat() {
-        Dimension newPos = getNewPos(cx, cy, mx, my);
-        cx = newPos.width;
-        cy = newPos.height;
+//        Dimension newPos = getNewPos(cx, cy, mx, my);
+//        cx = newPos.width;
+//        cy = newPos.height;
     }
 
     void moveMouse() {

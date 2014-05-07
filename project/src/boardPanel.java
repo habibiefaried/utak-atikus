@@ -83,8 +83,9 @@ public class boardPanel extends JPanel {
 	ArrayList<Point> allowed = new ArrayList<Point>();  
 	
 	private void buildAllowed() {
+	    ConfigReader cr = ConfigReader.getInstance();
 	    allowed.clear();
-	    for (int i = 0; i < 4; i++) {
+	    for (int i = 0; i < cr.getBatasPenglihatan() + 1; i++) {
 	        if (i == 0) {
 	            allowed.add(new Point(world.mx, world.my));
 	        } else {
@@ -158,10 +159,10 @@ public class boardPanel extends JPanel {
 				boardContainer c = (boardContainer) e.nextElement();
 				if (c.o.getType() > 0) {
 				    if (world != null) {
-				        buildAllowed();
-				        if (isInAllowed(c.d.width, c.d.height)) {
+//				        buildAllowed();
+//				        if (isInAllowed(c.d.width, c.d.height)) {
 				            c.o.drawObject(g,c.d.width, c.d.height, sqw, sqh, this);
-				        }
+//				        }
 				    } else {
 				        c.o.drawObject(g,c.d.width, c.d.height, sqw, sqh, this);
 				    }
