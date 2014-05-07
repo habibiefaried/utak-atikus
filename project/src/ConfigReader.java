@@ -7,25 +7,18 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
-public  class ConfigReader {
+public class ConfigReader {
 	private int episode = 10;
-	private int batas_penglihatan, c, k;
+	private int batas_penglihatan;
+	private int c;
+	private int k;
 	private ArrayList<Point> set_posisi_play;
 	private ArrayList<Point> set_posisi_train;
-	
-	/**just for test*/
-//	public static void main(String[] args) {
-//		ConfigReader cf = new ConfigReader();
-//		System.out.println(""+cf.getBatasPenglihatan());
-//		System.out.println(""+cf.getJumlahKeju());
-//		System.out.println(""+cf.getJumlahKucing());
-//		System.out.println(""+cf.getSetPosisiPlay().toString());
-//		System.out.println(""+cf.getSetPosisiTrain().toString());
-//    }
-	/**just for test*/
+	public static ConfigReader conf;
 	
 	public ConfigReader() {
 	        //reading file line by line in Java using BufferedReader      
+
 	        FileInputStream fis = null;
 	        BufferedReader reader = null;
 	        String line;
@@ -67,6 +60,7 @@ public  class ConfigReader {
                     }
         			Point posisiPlay = new Point(a, b);
             		set_posisi_play.add(posisiPlay);
+            		
                 }
 
                 //read set_posisi_train
@@ -84,6 +78,7 @@ public  class ConfigReader {
                 		}
                 		ind++;
                     }
+        			System.out.println(""+a+""+b);
         			Point posisiTrain = new Point(a,b);
             		set_posisi_train.add(posisiTrain);
                 }
@@ -101,8 +96,14 @@ public  class ConfigReader {
 						e.printStackTrace();
 					}
 
-
 	        }
+	}
+	
+	public static ConfigReader getInstance(){
+		if (conf == null){
+			conf = new ConfigReader();
+		}
+		return conf;
 	}
 	
 	public ArrayList<Point> getSetPosisiPlay(){
