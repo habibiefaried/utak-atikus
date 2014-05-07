@@ -1,5 +1,9 @@
 import java.awt.*;
+
 import javax.swing.*;
+
+import sun.security.acl.WorldGroupImpl;
+
 import java.util.*;
 
 public class boardPanel extends JPanel {
@@ -7,6 +11,8 @@ public class boardPanel extends JPanel {
 	int xdim, ydim;
 	int wdim, hdim,sqw, sqh;
 	final Color background = Color.white;
+	
+	private CatAndMouseWorld world = null;
 	
 	boardObject[][] board; // objects on board, listed as array of boardObject elements
 	Vector boardVec; // objects on board to paint, listed as vector in order of painting
@@ -74,6 +80,54 @@ public class boardPanel extends JPanel {
 	public Dimension getMaximumSize() {	return preferredSize; }
 	public Dimension getMinimumSize() {	return preferredSize; }
 
+	ArrayList<Point> allowed = new ArrayList<Point>();  
+	
+	private void buildAllowed() {
+	    allowed.clear();
+	    for (int i = 0; i < 4; i++) {
+	        if (i == 0) {
+	            allowed.add(new Point(world.mx, world.my));
+	        } else {
+	            switch (world.arah) {
+	                case 0:
+	                    allowed.add(new Point(world.mx, world.my-i));
+	                    break;
+	                case 1:
+	                    allowed.add(new Point(world.mx+i, world.my-i));
+                        break;
+	                case 2:
+	                    allowed.add(new Point(world.mx+i, world.my));
+                        break;
+	                case 3:
+	                    allowed.add(new Point(world.mx+i, world.my+i));
+                        break;
+	                case 4:
+	                    allowed.add(new Point(world.mx, world.my+i));
+                        break;
+	                case 5:
+	                    allowed.add(new Point(world.mx-i, world.my+i));
+                        break;
+	                case 6:
+	                    allowed.add(new Point(world.mx-i, world.my));
+                        break;
+	                case 7:
+	                    allowed.add(new Point(world.mx-i, world.my-i));
+                        break;
+	            }
+	        }
+        }
+	}
+	
+	private boolean isInAllowed(int x, int y) {
+	    for (int i = 0; i < allowed.size(); i++) {
+            Point temp = allowed.get(i);
+            if (x == temp.x && y == temp.y) {
+                return true;
+            }
+        }
+	    return false;
+	}
+	
 	void drawboard(Graphics g) {
 		g.setColor(Color.black);
 		g.fillRect(0,0,getWidth(), getHeight());
@@ -84,7 +138,17 @@ public class boardPanel extends JPanel {
 		// draw background panels
 		if (def != null) {
 			for (int y=0; y<ydim; y++) {
-				for (int x=0; x<xdim; x++) def.drawObject(g, x, y, sqw, sqh, this);
+				for (int x=0; x<xdim; x++) {
+				    if (world != null) {
+    				    buildAllowed();
+                        if (isInAllowed(x, y)) {
+                            def.drawObject(g, x, y, sqw, sqh, this);
+                        }
+				    } else {
+				        def.drawObject(g, x, y, sqw, sqh, this);
+				    }
+//				    def.drawObject(g, x, y, sqw, sqh, this);
+				}
 			}
 		}
 		
@@ -92,12 +156,24 @@ public class boardPanel extends JPanel {
 			// draw each element in the vector
 			for (Enumeration e = boardVec.elements(); e.hasMoreElements();) {
 				boardContainer c = (boardContainer) e.nextElement();
-				c.o.drawObject(g,c.d.width, c.d.height, sqw, sqh, this);
+				if (c.o.getType() > 0) {
+				    if (world != null) {
+				        buildAllowed();
+				        if (isInAllowed(c.d.width, c.d.height)) {
+				            c.o.drawObject(g,c.d.width, c.d.height, sqw, sqh, this);
+				        }
+				    } else {
+				        c.o.drawObject(g,c.d.width, c.d.height, sqw, sqh, this);
+				    }
+				}
 			}
 		} else {
+		    System.out.println("salvian");
 			// draw from grid
 			for (int y=0; y<ydim; y++) {
-				for (int x=0; x<xdim; x++)
+				for (int x
+				        
+				        =0; x<xdim; x++)
 					if (board[x][y] != null) 
 						board[x][y].drawObject(g, x, y, sqw, sqh, this);
 			}
@@ -127,6 +203,14 @@ public class boardPanel extends JPanel {
 		}
 		return retString;
 	}
+	
+	public void setWorld(CatAndMouseWorld world) {
+        this.world = world;
+    }
+	
+	public CatAndMouseWorld getWorld() {
+        return world;
+    }
 }
 
 class boardContainer {

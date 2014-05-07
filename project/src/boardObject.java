@@ -7,6 +7,15 @@ public class boardObject {
 	Image objImage;
 	int style;
 	int xcoord, ycoord;
+	int type = 0;
+	
+	public int getType() {
+        return type;
+    }
+	
+	public void setType(int type) {
+        this.type = type;
+    }
 	
 	public boardObject(Color c) {
 		this.objColour = c;
@@ -16,6 +25,11 @@ public class boardObject {
 	public boardObject(Image i) {
 		this.objImage = i;
 		this.style = O_IMG;
+	}
+	
+	public void setImage(Image i) {
+	    this.objImage = i;
+	    this.style = O_IMG;
 	}
 	
 	public void setCoords(Dimension d) { xcoord = d.width; ycoord = d.height; }
