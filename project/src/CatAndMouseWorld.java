@@ -169,7 +169,7 @@ public class CatAndMouseWorld implements RLWorld {
     public int[] resetState() {
         catscore = 0;
         mousescore = 0;
-        setRandomPos();
+        setRandomPos();//set random position
         return getState();
     }
 
@@ -219,7 +219,23 @@ public class CatAndMouseWorld implements RLWorld {
         hx = d.width;
         hy = d.height;
     }
-
+    
+    public void setPosFromFile(){
+    	   ConfigReader conf = ConfigReader.getInstance();
+           Dimension d = getRandomPos();
+           cx = d.width;
+           cy = d.height;
+           d = getRandomPos();
+           mx = d.width;
+           my = d.height;
+           d = getRandomPos();
+           chx = d.width;
+           chy = d.height;
+           d = getRandomPos();
+           hx = d.width;
+           hy = d.height;
+    }
+    
     boolean legal(int x, int y) {
         return ((x >= 0) && (x < bx) && (y >= 0) && (y < by)) && (!walls[x][y]);
     }

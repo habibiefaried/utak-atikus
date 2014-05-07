@@ -54,21 +54,37 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 	final String MS_TEXT = "Mouse Score:", CS_TEXT = "Cat Score:";
 	JSlider speed, smoothSlider;
 	Image catImg, mouseImg;
+	Image mouseImg0;
+	Image mouseImg1;
+	Image mouseImg2;
+	Image mouseImg3;
+	Image mouseImg4;
+	Image mouseImg5;
+	Image mouseImg6;
+	Image mouseImg7;
 	chartPanel graphPanel;
 	JLabel winPerc;
 			
 	boardObject cat, mouse, cheese, back, hole, wall;
-
-					
+		
 	public SwingApplet() {
 		getRootPane().putClientProperty("defeatSystemEventQueueCheck",Boolean.TRUE);
-		
+//		ConfigReader conf = ConfigReader.getInstance();
+//		System.out.println("batas lihat:"+conf.getBatasPenglihatan());
 	}
 	
 	public void init() {
 		// load images
 		catImg = getImage(getCodeBase(), "cat.gif");
 		mouseImg = getImage(getCodeBase(), "mouse.gif");
+		mouseImg0 = getImage(getCodeBase(), "mouse0.gif");
+		mouseImg1 = getImage(getCodeBase(), "mouse1.gif");
+		mouseImg2 = getImage(getCodeBase(), "mouse2.gif");
+		mouseImg3 = getImage(getCodeBase(), "mouse3.gif");
+		mouseImg4 = getImage(getCodeBase(), "mouse4.gif");
+		mouseImg5 = getImage(getCodeBase(), "mouse5.gif");
+		mouseImg6 = getImage(getCodeBase(), "mouse6.gif");
+		mouseImg7 = getImage(getCodeBase(), "mouse7.gif");
 		Image wallImg = getImage(getCodeBase(), "wall.gif");
 		Image cheeseImg = getImage(getCodeBase(), "cheese.gif");
 		Image floorImg = getImage(getCodeBase(), "floor.gif");
@@ -80,11 +96,17 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 
 		// set up board objects
 		cat = new boardObject(catImg);
+		cat.setType(3);
 		mouse = new boardObject(mouseImg);
+		mouse.setType(1);
 		cheese = new boardObject(cheeseImg);
+		cheese.setType(2);
 		back = new boardObject(floorImg);
+		back.setType(0);
 		hole = new boardObject(Color.orange);
+		hole.setType(3);
 		wall = new boardObject(wallImg);
+		wall.setType(4);
 		
 		// setup content panes
 		tabbedPane = new JTabbedPane();
@@ -127,6 +149,7 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		playWorld = new CatAndMouseWorld(xdim, ydim,trainWorld.walls);
 
 		bp.setDimensions(xdim, ydim);
+		bp.setWorld(playWorld);
 		
 		rlc = new RLController(this, trainWorld, DELAY);
 		rl = rlc.learner;
@@ -188,18 +211,18 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		bp.setSquare(cat, game.getCat());
 		//bp.setSquare(hole, game.getHole());
 		
-		String direction = "";
+//		String direction = "";
 		switch (game.getArah()) {
-		    case 0: direction = "Atas";break;
-		    case 1: direction = "Kanan Atas";break;
-		    case 2: direction = "Kanan";break;
-		    case 3: direction = "Kanan Bawah";break;
-		    case 4: direction = "Bawah";break;
-		    case 5: direction = "Kiri Bawah";break;
-		    case 6: direction = "Kiri";break;
-		    case 7: direction = "Kiri Atas";break;
+		    case 0: mouse.setImage(mouseImg0); break;
+		    case 1: mouse.setImage(mouseImg1); break;
+		    case 2: mouse.setImage(mouseImg2); break;
+		    case 3: mouse.setImage(mouseImg3); break;
+		    case 4: mouse.setImage(mouseImg4); break;
+		    case 5: mouse.setImage(mouseImg5); break;
+		    case 6: mouse.setImage(mouseImg6); break;
+		    case 7: mouse.setImage(mouseImg7); break;
 		}
-		mousescorelabel.setText(MS_TEXT+" "+Integer.toString(mousescore) + " " + direction);
+		mousescorelabel.setText(MS_TEXT+" "+Integer.toString(mousescore));
 		// display text representation
 		//System.out.println(bp);
 		bp.repaint();
@@ -279,17 +302,18 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 	Container makeWorldPanel() {
 		JPanel worldPane = new JPanel();
 		worldPane.setLayout(new BorderLayout());
-
+		
 		worldSelGroup = new ButtonGroup();
 		
 		worldPane.add(chooseWorld(), BorderLayout.CENTER);
 		//worldPane.add(customWorld(), BorderLayout.EAST);
 		JButton startbutt = new JButton("Momo to start!");
+
 		startbutt.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				// selected world type, choose action
 				if (sampleWorld) {
-					worldInit(selectedWalls);
+					worldInit(selectedWalls); //selectedWalls diperoleh dari chooseWorld
 				} else if (designWorld) {
 					// custom designed world
 				
