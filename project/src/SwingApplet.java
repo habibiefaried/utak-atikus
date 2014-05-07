@@ -66,11 +66,11 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 	JLabel winPerc;
 			
 	boardObject cat, mouse, cheese, back, hole, wall;
-
-					
+		
 	public SwingApplet() {
 		getRootPane().putClientProperty("defeatSystemEventQueueCheck",Boolean.TRUE);
-		
+//		ConfigReader conf = ConfigReader.getInstance();
+//		System.out.println("batas lihat:"+conf.getBatasPenglihatan());
 	}
 	
 	public void init() {
@@ -302,12 +302,13 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 	Container makeWorldPanel() {
 		JPanel worldPane = new JPanel();
 		worldPane.setLayout(new BorderLayout());
-
+		
 		worldSelGroup = new ButtonGroup();
 		
 		worldPane.add(chooseWorld(), BorderLayout.CENTER);
 		//worldPane.add(customWorld(), BorderLayout.EAST);
 		JButton startbutt = new JButton("Momo to start!");
+
 		startbutt.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				// selected world type, choose action

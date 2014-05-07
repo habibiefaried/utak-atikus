@@ -15,7 +15,7 @@ class sampleWorlds {
         new MapReader();
         
         boolean[][] wallsA = MapReader.wallsMap;
-
+        
         samples.addElement(new wallSample(wallsA, title));
                               
         title = "Cross (5x5)";
