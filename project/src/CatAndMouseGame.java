@@ -51,15 +51,22 @@ public class CatAndMouseGame extends Thread {
 			//System.out.println("Game playing. Making move.");
 			int action=-1;
 			if (mousetype == GREEDY) {
-				action = world.mouseAction();
+//				action = world.mouseAction();
+			    Random rnd = new Random();
+                action = rnd.nextInt(3);
+                switch (action) {
+//                    case 0: System.out.println("left"); break;
+//                    case 1: System.out.println("up"); break;
+//                    case 2: System.out.println("right"); break;
+                }
 			} else if (mousetype == SMART) {
 //				action = policy.getBestAction(world.getState());
 			    Random rnd = new Random();
 			    action = rnd.nextInt(3);
 			    switch (action) {
-			        case 0: System.out.println("<"); break;
-			        case 1: System.out.println("^"); break;
-			        case 2: System.out.println(">"); break;
+//			        case 0: System.out.println("left"); break;
+//			        case 1: System.out.println("up"); break;
+//			        case 2: System.out.println("right"); break;
 			    }
 			    
 			} else {

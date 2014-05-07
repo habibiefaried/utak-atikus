@@ -1,5 +1,6 @@
 /CatAndMouseGame.class
 /CatAndMouseWorld.class
+/ConfigReader.class
 /MapReader.class
 /RLController.class
 /RLPolicy.class
@@ -24,3 +25,11 @@
 /chartPanel.class
 /sampleWorlds.class
 /wallSample.class
+/mouse0.gif
+/mouse1.gif
+/mouse2.gif
+/mouse3.gif
+/mouse4.gif
+/mouse5.gif
+/mouse6.gif
+/mouse7.gif
