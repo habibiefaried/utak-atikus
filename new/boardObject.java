@@ -6,7 +6,7 @@ public class boardObject {
 	Color objColour;
 	Image objImage;
 	int style;
-	int xcoord, ycoord; //koordinat benda
+	int xcoord, ycoord;
 	
 	public boardObject(Color c) {
 		this.objColour = c;
@@ -18,8 +18,8 @@ public class boardObject {
 		this.style = O_IMG;
 	}
 	
-	public void setCoords(Dimension d) { System.out.println("AMPAS : xcoord "+xcoord+" ycoord "+ycoord); xcoord = d.width; ycoord = d.height; } //posisi barang
-	public void setCoords(int x, int y) { System.out.println("AMPAS : xcoord "+xcoord+" ycoord "+ycoord); xcoord = x; ycoord = y; }
+	public void setCoords(Dimension d) { xcoord = d.width; ycoord = d.height; }
+	public void setCoords(int x, int y) { xcoord = x; ycoord = y; }
 
 	public void drawObject(Graphics g, int w, int h, ImageObserver i) { drawObject(g,xcoord,ycoord,w,h,i); }
 	public void drawObject(Graphics g, int w, int h) { drawObject(g,xcoord,ycoord,w,h,null); }
