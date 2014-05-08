@@ -1,29 +1,14 @@
 import java.awt.*;
-import java.util.*;
 
 public class CatAndMouseWorld implements RLWorld{
 	public int bx, by;
 
-	public int mx, my; //mouse
-	public int cx, cy; //cat <- terdapat K kucing, siap2 udah di array
-	public int chx, chy;//cheese <-- terdapat C keju, siap2 sudah jadi aray
-	public int hx, hy;
+	//public int mx, my;
+	//public int cx, cy;
+	//public int chx, chy;
+	public int hx, hy; //ini hole, gk penting
 	public boolean gotCheese = false;
 	
-	public int arah; //Modifikasi : arah
-
-	/* Perjanjian sesuaikan dengan Dimension getCoords(int action) {
-		0 : Atas
-		1 : Kanan Atas
-		2 : Kanan
-		3 : Kanan Bawah
-		4 : Bawah
-		5 : Kiri Bawah
-		6 : Kiri
-		7 : Kiri atas
-
-	*/
-		
 	public int catscore = 0, mousescore = 0;
 	public int cheeseReward, deathPenalty;
 	
@@ -35,29 +20,26 @@ public class CatAndMouseWorld implements RLWorld{
 	public boolean[][] walls;
 
 	/* Kode tambahan */
-	/* MODIFIKASI */
 	private void debug(String msg) { System.out.println("DEBUG : "+msg); }
-	public ArrayList<Integer> modified_chx = new ArrayList<Integer>();
-	public ArrayList<Integer> modified_chy = new ArrayList<Integer>();
+
 	/* End of kode tambahan */
 
-	public CatAndMouseWorld(int jmlCheese, int x, int y, int numWalls) {
+	public CatAndMouseWorld(int x, int y, int numWalls) {
 		bx = x;
 		by = y;
 		makeWalls(x,y,numWalls);
 		cheeseReward = x + y; //Kode tambahan
 		deathPenalty = x + y; //Kode tambahan
-		resetState(jmlCheese);
+		resetState();
 	}
 	
-	public CatAndMouseWorld(int jmlCheese, int x, int y, boolean[][] newwalls) {
+	public CatAndMouseWorld(int x, int y, boolean[][] newwalls) {
 		bx = x;
 		by = y;
 		
 		walls = newwalls;
 		
-		resetState(jmlCheese);
-		System.out.println("Construktor : "+jmlCheese);
+		resetState();
 	}
 
 	/******* RLWorld interface functions ***********/
@@ -80,8 +62,8 @@ public class CatAndMouseWorld implements RLWorld{
 		int ax=d.width, ay=d.height;
 		if (legal(ax,ay)) {
 			// move agent
-			mx = ax; my = ay;
-			debug("MoveX : "+mx+" MoveY : "+my);
+			GamePlay.mx = ax; GamePlay.my = ay;
+			debug("MoveX : "+GamePlay.mx+" MoveY : "+GamePlay.my);
 		} else {
 			//System.err.println("Illegal action: "+action);
 		}
@@ -90,10 +72,10 @@ public class CatAndMouseWorld implements RLWorld{
 		waitingReward = calcReward();
 		
 		// if mouse has cheese, relocate cheese
-		if ((mx==chx) && (my==chy)) {
+		if ((GamePlay.mx==GamePlay.chx) && (GamePlay.my==GamePlay.chy)) {
 			d = getRandomPos();
-			chx = d.width;
-			chy = d.height;
+			GamePlay.chx = d.width;
+			GamePlay.chy = d.height;
 		}
 		
 		/*// if cat has mouse, relocate mouse
@@ -115,16 +97,16 @@ public class CatAndMouseWorld implements RLWorld{
 	}
 	
 	Dimension getCoords(int action) {
-		int ax=mx, ay=my;
+		int ax=GamePlay.mx, ay=GamePlay.my;
 		switch(action) {
-			case 0: ay = my - 1; debug("atas"); break; //atas
-			case 1: ay = my - 1; debug("kanan atas"); ax = mx + 1; break; //kanan atas
-			case 2: ax = mx + 1; debug("kanan"); break;
-			case 3: ay = my + 1; debug("kanan bawah"); ax = mx + 1; break;
-			case 4: ay = my + 1; debug("bawah");  break;
-			case 5: ay = my + 1; debug("kiri bawah"); ax = mx - 1; break;
-			case 6: ax = mx - 1; debug("kiri"); break;
-			case 7: ay = my - 1; debug("kiri atas"); ax = mx - 1; break;
+			case 0: ay = GamePlay.my - 1; break;
+			case 1: ay = GamePlay.my - 1; ax = GamePlay.mx + 1; break;
+			case 2: ax = GamePlay.mx + 1; break;
+			case 3: ay = GamePlay.my + 1; ax = GamePlay.mx + 1; break;
+			case 4: ay = GamePlay.my + 1; break;
+			case 5: ay = GamePlay.my + 1; ax = GamePlay.mx - 1; break;
+			case 6: ax = GamePlay.mx - 1; break;
+			case 7: ay = GamePlay.my - 1; ax = GamePlay.mx - 1; break;
 			default: //System.err.println("Invalid action: "+action);
 		}
 		return new Dimension(ax, ay);
@@ -141,10 +123,10 @@ public class CatAndMouseWorld implements RLWorld{
 	}
 
 	public boolean endState() { return endGame(); }
-	public int[] resetState(int jmlCheese) { 
+	public int[] resetState() { 
 		catscore = 0;
 		mousescore = 0;
-		setRandomPos(jmlCheese); 
+		setRandomPos(); 
 		return getState();
 	}
 		
@@ -152,25 +134,24 @@ public class CatAndMouseWorld implements RLWorld{
 	/******* end RLWorld functions **********/
 	
 	public int[] getState() {
-		//Ini ngubah percept (nomor 1)
 		// translates current state into int array
 		stateArray = new int[NUM_OBJECTS];
-		stateArray[0] = mx;
-		stateArray[1] = my;
-		stateArray[2] = cx;
-		stateArray[3] = cy;
-		stateArray[4] = chx;
-		stateArray[5] = chy;
+		stateArray[0] = GamePlay.mx;
+		stateArray[1] = GamePlay.my;
+		stateArray[2] = GamePlay.cx;
+		stateArray[3] = GamePlay.cy;
+		stateArray[4] = GamePlay.chx;
+		stateArray[5] = GamePlay.chy;
 		return stateArray;
 	}
 
 	public double calcReward() {
 		double newReward = 0;
-		if ((mx==chx)&&(my==chy)) {
+		if ((GamePlay.mx==GamePlay.chx)&&(GamePlay.my==GamePlay.chy)) {
 			mousescore++;
 			newReward += cheeseReward;
 		}
-		if ((cx==mx) && (cy==my)) {
+		if ((GamePlay.cx==GamePlay.mx) && (GamePlay.cy==GamePlay.my)) {
 			catscore++;
 			newReward -= deathPenalty;
 		}
@@ -178,48 +159,28 @@ public class CatAndMouseWorld implements RLWorld{
 		return newReward;		
 	}
 	
-	private void initAllCheese(int jmlCheese) {
-		modified_chx = new ArrayList<Integer>();
-		modified_chy = new ArrayList<Integer>();
-		for (int i=0;i<jmlCheese;i++) {
-			modified_chx.add(0); //diinisialisasi
-			modified_chy.add(0); //diinisialisasi
-		}
-	}
-
-	public void setRandomPos(int jmlCheese) {
-		/* MODIFIKASI */
-		System.out.println("Jumlah keju : "+jmlCheese);
-		/* */
+	public void setRandomPos() {
 		Dimension d = getRandomPos();
-		cx = d.width; //random (NAH INI)
-		cy = d.height; //random (NAH INI)
+		GamePlay.cx = d.width;
+		GamePlay.cy = d.height;
 		d = getRandomPos();
-		mx = d.width;
-		my = d.height;
+		GamePlay.mx = d.width;
+		GamePlay.my = d.height;
 		d = getRandomPos();
-		chx = d.width;
-		chy = d.height;
+		GamePlay.chx = d.width;
+		GamePlay.chy = d.height;
 		d = getRandomPos();
 		hx = d.width;
 		hy = d.height;
-
-		initAllCheese(jmlCheese);
-
-		for (int i=0;i<jmlCheese;i++) {
-			d = getRandomPos();
-			modified_chx.set(i,d.width);
-			modified_chy.set(i,d.height);
-		}		
 	}
 
 	boolean legal(int x, int y) {
-		return ((x>=0) && (x<bx) && (y>=0) && (y<by)) && (!walls[x][y]); //Kasih punishment nabrak tembok
+		return ((x>=0) && (x<bx) && (y>=0) && (y<by)) && (!walls[x][y]);
 	}
 
 	boolean endGame() {
 		//return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
-		return ((cx==mx) && (cy==my));
+		return ((GamePlay.cx==GamePlay.mx) && (GamePlay.cy==GamePlay.my));
 	}
 
 	Dimension getRandomPos() {
@@ -258,20 +219,20 @@ public class CatAndMouseWorld implements RLWorld{
 	}
 
 	void moveCat() {
-		Dimension newPos = getNewPos(cx, cy, mx, my);
-		cx = newPos.width;
-		cy = newPos.height;		
+		Dimension newPos = getNewPos(GamePlay.cx, GamePlay.cy, GamePlay.mx, GamePlay.my);
+		GamePlay.cx = newPos.width;
+		GamePlay.cy = newPos.height;		
 	}
 
 	void moveMouse() {
-		Dimension newPos = getNewPos(mx, my, chx, chy);
-		mx = newPos.width;
-		my = newPos.height;
+		Dimension newPos = getNewPos(GamePlay.mx, GamePlay.my, GamePlay.chx, GamePlay.chy);
+		GamePlay.mx = newPos.width;
+		GamePlay.my = newPos.height;
 	}
 	
 	int mouseAction() {
-		Dimension newPos = getNewPos(mx, my, chx, chy);
-		return getAction(newPos.width-mx,newPos.height-my);
+		Dimension newPos = getNewPos(GamePlay.mx, GamePlay.my, GamePlay.chx, GamePlay.chy);
+		return getAction(newPos.width-GamePlay.mx,newPos.height-GamePlay.my);
 	}
 	/******** end heuristic functions ***********/
 

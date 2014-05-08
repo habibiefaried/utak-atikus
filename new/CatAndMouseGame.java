@@ -11,9 +11,9 @@ public class CatAndMouseGame extends Thread {
 	
 	public boolean gameOn = false, single=false, gameActive, newInfo = false;
 	
-	public CatAndMouseGame(SwingApplet s, long delay, CatAndMouseWorld w, RLPolicy policy) {		
+	public CatAndMouseGame(SwingApplet s, long delay, CatAndMouseWorld w, RLPolicy policy) {
 		world = w;
-		System.out.println("CatAndMouseGame JmlCheese : "+s.jmlCheese);
+		
 		a=s;
 		this.delay = delay;
 		this.policy = policy;
@@ -27,7 +27,7 @@ public class CatAndMouseGame extends Thread {
 			while(true) {
 				while(gameOn) {
 					gameActive = true;
-					resetGame(a.jmlCheese);
+					resetGame();
 					SwingUtilities.invokeLater(a); // draw initial state
 					runGame();
 					gameActive = false;
@@ -69,7 +69,8 @@ public class CatAndMouseGame extends Thread {
 		a.catscore += world.catscore;
 		
 		// turn off gameOn flag if only single game
-		if (single) gameOn = false;
+		//if (single) gameOn = false; //MODIFIKASI (cukup satu game saja)
+		gameOn = false;
 	}
 	
 	public void interrupt() {
@@ -81,12 +82,9 @@ public class CatAndMouseGame extends Thread {
 
 	public void setPolicy(RLPolicy p) {	policy = p; }
 	
-	public Dimension getMouse() { return new Dimension(world.mx, world.my); }
-	public Dimension getCat() { return new Dimension(world.cx, world.cy); }
-	public Dimension getCheese() { return new Dimension(world.chx, world.chy); }
-
-	public Dimension getModifiedCheese(int i){return new Dimension(world.modified_chx.get(i),world.modified_chy.get(i));}
-
+	public Dimension getMouse() { return new Dimension(GamePlay.mx, GamePlay.my); }
+	public Dimension getCat() { return new Dimension(GamePlay.cx, GamePlay.cy); }
+	public Dimension getCheese() { return new Dimension(GamePlay.chx, GamePlay.chy); }
 	public Dimension getHole() { return new Dimension(world.hx, world.hy); }
 	public boolean[][] getWalls() { return world.walls; }
 	
@@ -95,8 +93,8 @@ public class CatAndMouseGame extends Thread {
 		world.moveCat();
 	}
 
-	public void resetGame(int jmlCheese) {
-		world.resetState(jmlCheese);
+	public void resetGame() {
+		world.resetState();
 	}
 }
 

@@ -46,8 +46,6 @@ public class RLearner {
     boolean random = false;
 	Runnable a;
 
-    public int jmlCheese;
-
     public RLearner( RLWorld world) {
 		// Getting the world from the invoking method.
 		thisWorld = world;
@@ -95,9 +93,9 @@ public class RLearner {
 	
 	// execute one epoch
 	public void runEpoch() {
-		//
+	
 		// Reset state to start position defined by the world.
-		state = thisWorld.resetState(this.jmlCheese);
+		state = thisWorld.resetState();
 		
 		switch( learningMethod ) {
 	    
@@ -111,11 +109,11 @@ public class RLearner {
 		    
 			    if( ! running ) break;
 					action = selectAction( state );
-		    		newstate = thisWorld.getNextState( action ); //getNextState diganti
+		    		newstate = thisWorld.getNextState( action );
 				    reward = thisWorld.getReward();
 		    
 				    this_Q = policy.getQValue( state, action );
-				    max_Q = policy.getMaxQValue( newstate ); 
+				    max_Q = policy.getMaxQValue( newstate );
 
 				    // Calculate new Value for Q
 				    new_Q = this_Q + alpha * ( reward + gamma * max_Q - this_Q );

@@ -93,8 +93,6 @@ public class RLPolicy {
 	    curTable = Array.get( curTable, state[i] );
 	}
 
-	for (int sesuatu : state) System.out.println("DEBUG Percept: "+sesuatu);
-
 	//at last dimension of Array get QValues.
 	qValues = (double[]) Array.get( curTable, state[i] );
 	returnValues = new double[ qValues.length ];
