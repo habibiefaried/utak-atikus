@@ -94,7 +94,6 @@ public class ConfigReader {
                 		}
                 		ind++;
                     }
-        			System.out.println(""+a+""+b);
         			Point posisiTrain = new Point(a,b);
             		set_posisi_train.add(posisiTrain);
                 }

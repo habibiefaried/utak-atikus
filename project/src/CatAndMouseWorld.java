@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 
 public class CatAndMouseWorld implements RLWorld {
     public int bx, by;
@@ -170,6 +171,7 @@ public class CatAndMouseWorld implements RLWorld {
         catscore = 0;
         mousescore = 0;
         setRandomPos();//set random position
+//        setPosFromFile();
         return getState();
     }
 
@@ -223,14 +225,15 @@ public class CatAndMouseWorld implements RLWorld {
     public void setPosFromFile(){
     	   ConfigReader conf = ConfigReader.getInstance();
            Dimension d = getRandomPos();
-           cx = d.width;
-           cy = d.height;
-           d = getRandomPos();
-           mx = d.width;
-           my = d.height;
-           d = getRandomPos();
-           chx = d.width;
-           chy = d.height;
+           Point p = conf.getArrayPosisiKucing(0).get(0).get(0);
+           cx = (int) p.getX();
+           cy = (int) p.getY();
+           p = conf.getArrayPosisiTikus(0).get(0);	
+           mx = (int) p.getX();
+           my = (int) p.getY();
+           p = conf.getArrayPosisiKeju(0).get(0).get(0);
+           chx = (int) p.getX();
+           chy = (int) p.getY();
            d = getRandomPos();
            hx = d.width;
            hy = d.height;
