@@ -240,8 +240,8 @@ public class CatAndMouseWorld implements RLWorld {
     public void setPosFromFile(){
     	   ConfigReader conf = ConfigReader.getInstance();
            Dimension d = getRandomPos();
-           cx = d.width;
-           cy = d.height;
+        // cx = d.width;
+        // cy = d.height;
            d = getRandomPos();
            mx = d.width;
            my = d.height;
