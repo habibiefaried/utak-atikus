@@ -42,7 +42,6 @@ public class CatAndMouseWorld implements RLWorld {
         catCoord.clear();
         Random rnd = new Random();
         for (int i = 0; i < 3; i++) {
-            System.out.println("salvian");
             catCoord.add(new Point(rnd.nextInt(8), rnd.nextInt(8)));
         }
     }
@@ -57,7 +56,6 @@ public class CatAndMouseWorld implements RLWorld {
         catCoord.clear();
         Random rnd = new Random();
         for (int i = 0; i < 3; i++) {
-            System.out.println("salvian");
             catCoord.add(new Point(rnd.nextInt(8), rnd.nextInt(8)));
         }
     }

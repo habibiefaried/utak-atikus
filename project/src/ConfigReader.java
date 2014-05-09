@@ -21,14 +21,7 @@ public class ConfigReader {
 	private ArrayList<ArrayList<Point>> arr_of_arr_posisi_kucing;
 	
 	public static ConfigReader conf;
-	
-//	public static void main(String[] args){
-//		ConfigReader conf = new ConfigReader();
-//		System.out.println("arr posisi tikus: "+conf.getArrayPosisiTikus(1));
-//		System.out.println("arr posisi kucing:"+conf.getArrayPosisiKucing(1));
-//		System.out.println("arr posisi keju:"+conf.getArrayPosisiKeju(1));
-//	}
-	
+		
 	public ConfigReader() {
 	        //reading file line by line in Java using BufferedReader      
 
@@ -75,12 +68,16 @@ public class ConfigReader {
                 		ind++;
                     }
         			Point posisiPlay = new Point(a, b);
-            		set_posisi_play.add(posisiPlay);
-            		
+            		set_posisi_play.add(posisiPlay);            		
                 }
 
                 //read set_posisi_train
             	line = reader.readLine();
+
+            	//motong spasi di akhir
+            	line = line.substring(0,line.length()-1);
+
+            	
             	for (String retval: line.split(" ")){
         			retval = retval.substring(1,retval.length()-1);
         			retval = retval.replace(",", " ");
