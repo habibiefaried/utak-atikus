@@ -1,7 +1,6 @@
 import java.util.Vector;
 
 class sampleWorlds {
-	/* Baca dari teks: Modif 1*/
 	public Vector samples;
 	
 	public sampleWorlds() {
@@ -11,11 +10,12 @@ class sampleWorlds {
 		
 		// sample wall sets:
 		
-		title = "Wall dari map";
-		new MapReader();
-		
-		boolean[][] wallsA = MapReader.wallsMap;
-
+		title = "Wall (5x5)";
+		boolean[][] wallsA = {{false, false, false, false, false},
+		         {false, false, true , false, false},
+		         {false, false, true , false, false},
+		         {false, false, true , false, false},
+		         {false, false, false, false, false}};
 		samples.addElement(new wallSample(wallsA, title));
 							  
 		title = "Cross (5x5)";

@@ -100,7 +100,12 @@ public class CatAndMouseGame extends Thread {
 	public void setPolicy(RLPolicy p) {	policy = p; }
 	public Integer getArah() { return world.arah; }
 	public Dimension getMouse() { return new Dimension(world.mx, world.my); }
-	public Dimension getCat() { return new Dimension(world.cx, world.cy); }
+	public Dimension getCat(int id) {
+	    if (world.catCoord.size() > 0) {
+    	    Point catPoint = world.catCoord.get(id);
+    	    return new Dimension(catPoint.x, catPoint.y);
+	    } else return new Dimension();
+	}
 	public Dimension getCheese() { return new Dimension(world.chx, world.chy); }
 	public Dimension getHole() { return new Dimension(world.hx, world.hy); }
 	public boolean[][] getWalls() { return world.walls; }

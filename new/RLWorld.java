@@ -21,7 +21,7 @@ public interface RLWorld {
     boolean endState();
 
     // Resets the current state to the start position and returns that state.
-    int[] resetState(int jmlCheese);
+    int[] resetState();
     
     // Gets the initial value for the policy.
     double getInitValues();

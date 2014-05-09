@@ -65,7 +65,8 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 	chartPanel graphPanel;
 	JLabel winPerc;
 			
-	boardObject cat, mouse, cheese, back, hole, wall;
+	boardObject mouse, cheese, back, hole, wall;
+	ArrayList<boardObject> cat = new ArrayList<boardObject>();
 		
 	public SwingApplet() {
 		getRootPane().putClientProperty("defeatSystemEventQueueCheck",Boolean.TRUE);
@@ -95,8 +96,14 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		Image cheeseImg = getImage(ClassLoader.getSystemResource("cheese.gif"));*/
 
 		// set up board objects
-		cat = new boardObject(catImg);
-		cat.setType(3);
+//		cat = new boardObject(catImg);
+//		cat.setType(3);
+		for (int i = 0; i < 3; i++) {
+		    boardObject catemp = new boardObject(catImg);
+		    catemp.setType(3);
+		    cat.add(catemp);
+        }
+		
 		mouse = new boardObject(mouseImg);
 		mouse.setType(1);
 		cheese = new boardObject(cheeseImg);
@@ -208,7 +215,10 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		// draw objects (cat over mouse over cheese)
 		bp.setSquare(cheese, game.getCheese());
 		bp.setSquare(mouse, game.getMouse());
-		bp.setSquare(cat, game.getCat());
+		for (int i = 0; i < 3; i++) {
+            bp.setSquare(cat.get(i), game.getCat(i));
+        }
+//		bp.setSquare(cat, game.getCat());
 		//bp.setSquare(hole, game.getHole());
 		
 //		String direction = "";
