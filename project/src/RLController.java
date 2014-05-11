@@ -29,25 +29,30 @@ public class RLController extends Thread {
 						epochswaiting--;
 						epochsdone++;
 						learner.runEpoch();
-						
-						if (epochswaiting % UPDATE_EPOCHS == 0) 
+						System.out.println("halo ep = "+epochswaiting);
+						if (epochswaiting % UPDATE_EPOCHS == 0) {
+							System.out.println("stucky");
 							SwingUtilities.invokeLater(a);
+						}
 					}
 					totaldone += epochsdone;
 					epochsdone = 0;
 					learner.running = false;
-					
+
+					System.out.println("debugNewInfo total done"+ totaldone);
 					newInfo = true;
 									
 					// inform applet we're finished
 					SwingUtilities.invokeLater(a);
 				}
-				
+				System.out.println("debug1");
 				sleep(delay);
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Controller interrupted.");
 		}
+
+		System.out.println("debu1");
 	}
 	
 	public void setEpisodes(int episodes) { 

@@ -282,6 +282,10 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		trainWorld.cheeseReward = cval;
 		trainWorld.deathPenalty = dval;
 		rlc.setEpisodes(episodes);
+
+		//opsi
+//		rlc.setEpisodes(ConfigReader.getInstance().getJumlahEpisode());
+		
 	}
 
 	void endTraining() {

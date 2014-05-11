@@ -259,5 +259,9 @@ public class ConfigReader {
 		}
 		return resPosisi;
 	}
+	
+	public int getJumlahEpisode(){
+		return episode;
+	}
 }
 
