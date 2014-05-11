@@ -9,6 +9,7 @@ public class CatAndMouseWorld implements RLWorld {
 
     ArrayList<ArrayList<Point>> catPos = new ArrayList<ArrayList<Point>>();
     ArrayList<ArrayList<Point>> cheesePos = new ArrayList<ArrayList<Point>>();
+    public ArrayList<Boolean> cheeseStatus = new ArrayList<Boolean>();
     public ArrayList<Point> catCoord = new ArrayList<Point>();
     public ArrayList<Point> cheeseCoord = new ArrayList<Point>();
 
@@ -53,7 +54,6 @@ public class CatAndMouseWorld implements RLWorld {
 
         resetState();
 
-
         // cheeseCoord.clear();
         // Random rnd = new Random();
         // for (int i = 0; i < 3; i++) {
@@ -70,7 +70,7 @@ public class CatAndMouseWorld implements RLWorld {
             retDim[i++] = by;
         }
         retDim[i] = NUM_ACTIONS;
-//        debug("X : " + bx + " Y : " + by);
+        // debug("X : " + bx + " Y : " + by);
         return retDim;
     }
 
@@ -83,6 +83,10 @@ public class CatAndMouseWorld implements RLWorld {
             // move agent
             mx = ax;
             my = ay;
+            if (action == 1) {
+                System.out.println("jalan maju -1"+mousescore);
+                mousescore--;
+            }
             // debug("MoveX : "+mx+" MoveY : "+my);
         } else {
             // System.err.println("Illegal action: "+action);
@@ -185,7 +189,7 @@ public class CatAndMouseWorld implements RLWorld {
     public int[] resetState() {
         catscore = 0;
         mousescore = 0;
-//        setRandomPos();//set random position
+        // setRandomPos();//set random position
         setPosFromFile();
         return getState();
     }
@@ -210,10 +214,27 @@ public class CatAndMouseWorld implements RLWorld {
 
     public double calcReward() {
         double newReward = 0;
-        if ((mx == chx) && (my == chy)) {
-            mousescore++;
-            newReward += cheeseReward;
+        
+        for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
+            if (cheeseCoord.get(i).x == mx && cheeseCoord.get(i).y == my && !cheeseStatus.get(i)) {
+                mousescore += (MapReader.jmlBaris + MapReader.jmlKolom);
+                newReward += cheeseReward;
+                cheeseStatus.set(i, true);
+                System.out.println(":) dapet keju : "+mousescore);
+            }
         }
+        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
+            if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
+                mousescore -= (MapReader.jmlBaris + MapReader.jmlKolom);
+                newReward -= deathPenalty;
+                System.out.println(":( Ketemu kucing : "+mousescore);
+            }
+        }
+
+        // if ((mx == chx) && (my == chy)) {
+        // // mousescore++;
+        // newReward += cheeseReward;
+        // }
         // if ((cx == mx) && (cy == my)) {
         // catscore++;
         // newReward -= deathPenalty;
@@ -242,7 +263,7 @@ public class CatAndMouseWorld implements RLWorld {
         ConfigReader conf = ConfigReader.getInstance();
         Dimension d = getRandomPos();
         Point p;
-        
+
         catPos = ConfigReader.getInstance().getArrayPosisiKucing(0);
         catCoord.clear();
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
@@ -251,25 +272,27 @@ public class CatAndMouseWorld implements RLWorld {
             baru.y -= 1;
             catCoord.add(baru);
         }
-        
+
         cheesePos = ConfigReader.getInstance().getArrayPosisiKeju(0);
         cheeseCoord.clear();
+        cheeseStatus.clear();
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
             Point baru = (Point) cheesePos.get(currentEpisode).get(i).clone();
             baru.x -= 1;
             baru.y -= 1;
             cheeseCoord.add(baru);
+            cheeseStatus.add(false);
         }
-        
-//        p = conf.getArrayPosisiKucing(0).get(0).get(0);
-//        cx = (int) p.getX();
-//        cy = (int) p.getY();
+
+        // p = conf.getArrayPosisiKucing(0).get(0).get(0);
+        // cx = (int) p.getX();
+        // cy = (int) p.getY();
         p = conf.getArrayPosisiTikus(0).get(0);
         mx = (int) p.getX() - 1;
         my = (int) p.getY() - 1;
-//        p = conf.getArrayPosisiKeju(0).get(0).get(0);
-//        chx = (int) p.getX();
-//        chy = (int) p.getY();
+        // p = conf.getArrayPosisiKeju(0).get(0).get(0);
+        // chx = (int) p.getX();
+        // chy = (int) p.getY();
 
         d = getRandomPos();
         hx = d.width;
@@ -277,16 +300,43 @@ public class CatAndMouseWorld implements RLWorld {
     }
 
     boolean legal(int x, int y) {
+        if ((x >= 0) && (x < bx) && (y >= 0) && (y < by))
+            if (walls[x][y]) {
+                System.out.println("Tabrak tembok :"+mousescore);
+                mousescore -= 2;
+            }
         return ((x >= 0) && (x < bx) && (y >= 0) && (y < by)) && (!walls[x][y]);
     }
-    
+
     boolean endGame() {
-//         return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
-//         return ((cx == mx) && (cy == my));
+        // return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
+        // return ((cx == mx) && (cy == my));
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
             if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
+                try {
+                    System.out.println("Game OVER");
+                    Thread.sleep(7000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return true;
             }
+        }
+        boolean allcheese = true;
+        for (int i = 0; i < cheeseStatus.size(); i++) {
+            if (!cheeseStatus.get(i)) {
+                allcheese = false;
+                break;
+            }
+        }
+        if (allcheese) {
+            try {
+                System.out.println("Game OVER");
+                Thread.sleep(7000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return true;
         }
         return false;
     }

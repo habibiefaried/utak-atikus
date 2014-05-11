@@ -12,8 +12,8 @@ import java.io.InputStreamReader;
 public class MapReader {  
     private static boolean[][] temporaryMap = new boolean[100][100];
     public static boolean[][] wallsMap;
-    private static int jmlKolom;
-    private static int jmlBaris;
+    public static int jmlKolom;
+    public static int jmlBaris;
 
     private static void parseIntoWallsMap(String line, int Kolom) {
         if (line != null) {

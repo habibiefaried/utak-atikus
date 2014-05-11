@@ -53,8 +53,9 @@ public class SwingApplet extends JApplet implements ActionListener, Runnable {
     JButton startbutt, stopbutt, pausebutt;
     boardPanel bp;
     public int mousescore = 0;
+    public int totalscore = 0;
     JLabel catscorelabel, mousescorelabel;
-    final String MS_TEXT = "Mouse Score:", CS_TEXT = "Cat Score:";
+    final String MS_TEXT = "Mouse Score:", CS_TEXT = "Total Score:";
     JSlider speed, smoothSlider;
     Image catImg, mouseImg;
     Image mouseImg0;
@@ -68,8 +69,7 @@ public class SwingApplet extends JApplet implements ActionListener, Runnable {
     chartPanel graphPanel;
     JLabel winPerc;
 
-    boardObject mouse, cheese, back, hole, wall;
-    ArrayList<boardObject> cat = new ArrayList<boardObject>();
+    boardObject mouse, cheese, back, hole, wall, cat;
 
     public SwingApplet() {
         getRootPane().putClientProperty("defeatSystemEventQueueCheck", Boolean.TRUE);
@@ -104,12 +104,13 @@ public class SwingApplet extends JApplet implements ActionListener, Runnable {
         // set up board objects
         // cat = new boardObject(catImg);
         // cat.setType(3);
-        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
-            boardObject catemp = new boardObject(catImg);
-            catemp.setType(3);
-            cat.add(catemp);
-        }
-
+//        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
+//            boardObject catemp = new boardObject(catImg);
+//            catemp.setType(3);
+//            cat.add(catemp);
+//        }
+        cat = new boardObject(catImg);
+        cat.setType(3);
         mouse = new boardObject(mouseImg);
         mouse.setType(1);
         cheese = new boardObject(cheeseImg);
@@ -199,8 +200,9 @@ public class SwingApplet extends JApplet implements ActionListener, Runnable {
     /************ general functions ****************/
     public void updateBoard() {
         // update score panels
+        // System.out.println(mousescore);
         mousescorelabel.setText(MS_TEXT + " " + Integer.toString(mousescore));
-        // catscorelabel.setText(CS_TEXT+" "+Integer.toString(catscore));
+        catscorelabel.setText(CS_TEXT+" "+Integer.toString(totalscore));
         if (game.newInfo) {
             updateScore();
             game.newInfo = false;
@@ -227,11 +229,12 @@ public class SwingApplet extends JApplet implements ActionListener, Runnable {
         // draw objects (cat over mouse over cheese)
         // bp.setSquare(cheese, game.getCheese());
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
-            bp.setSquare(cheese, game.getCheese(i));
+            if (!game.world.cheeseStatus.get(i))
+                bp.setSquare(cheese, game.getCheese(i));
         }
         bp.setSquare(mouse, game.getMouse());
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
-            bp.setSquare(cat.get(i), game.getCat(i));
+            bp.setSquare(cat, game.getCat(i));
         }
         // bp.setSquare(cat, game.getCat());
         // bp.setSquare(hole, game.getHole());
@@ -821,13 +824,15 @@ class chartPanel extends JPanel {
     }
 
     public void updateScores() {
-        // int m = a.mousescore, c = a.catscore;
-        // int dm = m-lastm, dc = c-lastc;
-        // lastm=m; lastc=c;
-        // double score;
-        // if ((m+c)==0) score = 0;
-        // else score = ((double)dm) / (dm+dc);
-        double score = a.mousescore;
+         int m = a.mousescore;//, c = a.catscore;
+         int dm = m-lastm;//, dc = c-lastc;
+         lastm=m;// lastc=c;
+         double score;
+//         if ((m+c)==0) score = 0;
+//         else score = ((double)dm) / (dm+dc);
+         System.out.println("m:"+m+", lastm:"+lastm+", dm:"+dm);
+         score = (double) dm;
+//        double score = a.mousescore;
         addScore(score);
     }
 
