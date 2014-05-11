@@ -2,13 +2,17 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-
 public class CatAndMouseWorld implements RLWorld {
     public int bx, by;
 
     public int mx, my;
+
+    ArrayList<ArrayList<Point>> catPos = new ArrayList<ArrayList<Point>>();
+    ArrayList<ArrayList<Point>> cheesePos = new ArrayList<ArrayList<Point>>();
     public ArrayList<Point> catCoord = new ArrayList<Point>();
-    public int catTotal = 3;
+    public ArrayList<Point> cheeseCoord = new ArrayList<Point>();
+
+    public int currentEpisode = 0;
     public int cx, cy;
     public int chx, chy;
     public int hx, hy;
@@ -39,11 +43,6 @@ public class CatAndMouseWorld implements RLWorld {
         cheeseReward = x + y; // Kode tambahan
         deathPenalty = x + y; // Kode tambahan
         resetState();
-        catCoord.clear();
-        Random rnd = new Random();
-        for (int i = 0; i < 3; i++) {
-            catCoord.add(new Point(rnd.nextInt(8), rnd.nextInt(8)));
-        }
     }
 
     public CatAndMouseWorld(int x, int y, boolean[][] newwalls) {
@@ -53,11 +52,13 @@ public class CatAndMouseWorld implements RLWorld {
         walls = newwalls;
 
         resetState();
-        catCoord.clear();
-        Random rnd = new Random();
-        for (int i = 0; i < 3; i++) {
-            catCoord.add(new Point(rnd.nextInt(8), rnd.nextInt(8)));
-        }
+
+
+        // cheeseCoord.clear();
+        // Random rnd = new Random();
+        // for (int i = 0; i < 3; i++) {
+        // cheeseCoord.add(new Point(rnd.nextInt(8), rnd.nextInt(8)));
+        // }
     }
 
     /******* RLWorld interface functions ***********/
@@ -213,10 +214,10 @@ public class CatAndMouseWorld implements RLWorld {
             mousescore++;
             newReward += cheeseReward;
         }
-//        if ((cx == mx) && (cy == my)) {
-//            catscore++;
-//            newReward -= deathPenalty;
-//        }
+        // if ((cx == mx) && (cy == my)) {
+        // catscore++;
+        // newReward -= deathPenalty;
+        // }
         // if ((mx==hx)&&(my==hy)&&(gotCheese)) newReward += 100;
         return newReward;
     }
@@ -225,7 +226,7 @@ public class CatAndMouseWorld implements RLWorld {
         Dimension d = getRandomPos();
         cx = d.width;
         cy = d.height;
-        
+
         d = getRandomPos();
         mx = d.width;
         my = d.height;
@@ -236,32 +237,53 @@ public class CatAndMouseWorld implements RLWorld {
         hx = d.width;
         hy = d.height;
     }
-    
-    public void setPosFromFile(){
-    	   ConfigReader conf = ConfigReader.getInstance();
-           Dimension d = getRandomPos();
-           Point p = conf.getArrayPosisiKucing(0).get(0).get(0);
-           cx = (int) p.getX();
-           cy = (int) p.getY();
-           p = conf.getArrayPosisiTikus(0).get(0);	
-           mx = (int) p.getX();
-           my = (int) p.getY();
-           p = conf.getArrayPosisiKeju(0).get(0).get(0);
-           chx = (int) p.getX();
-           chy = (int) p.getY();
-           d = getRandomPos();
-           hx = d.width;
-           hy = d.height;
+
+    public void setPosFromFile() {
+        ConfigReader conf = ConfigReader.getInstance();
+        Dimension d = getRandomPos();
+        Point p;
+        
+        catPos = ConfigReader.getInstance().getArrayPosisiKucing(0);
+        catCoord.clear();
+        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
+            Point baru = (Point) catPos.get(currentEpisode).get(i).clone();
+            baru.x -= 1;
+            baru.y -= 1;
+            catCoord.add(baru);
+        }
+        
+        cheesePos = ConfigReader.getInstance().getArrayPosisiKeju(0);
+        cheeseCoord.clear();
+        for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
+            Point baru = (Point) cheesePos.get(currentEpisode).get(i).clone();
+            baru.x -= 1;
+            baru.y -= 1;
+            cheeseCoord.add(baru);
+        }
+        
+//        p = conf.getArrayPosisiKucing(0).get(0).get(0);
+//        cx = (int) p.getX();
+//        cy = (int) p.getY();
+        p = conf.getArrayPosisiTikus(0).get(0);
+        mx = (int) p.getX() - 1;
+        my = (int) p.getY() - 1;
+//        p = conf.getArrayPosisiKeju(0).get(0).get(0);
+//        chx = (int) p.getX();
+//        chy = (int) p.getY();
+
+        d = getRandomPos();
+        hx = d.width;
+        hy = d.height;
     }
-    
+
     boolean legal(int x, int y) {
         return ((x >= 0) && (x < bx) && (y >= 0) && (y < by)) && (!walls[x][y]);
     }
 
     boolean endGame() {
         // return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
-//        return ((cx == mx) && (cy == my));
-        for (int i = 0; i < catTotal; i++) {
+        // return ((cx == mx) && (cy == my));
+        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
             if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
                 return true;
             }
@@ -312,9 +334,9 @@ public class CatAndMouseWorld implements RLWorld {
     }
 
     void moveCat() {
-//        Dimension newPos = getNewPos(cx, cy, mx, my);
-//        cx = newPos.width;
-//        cy = newPos.height;
+        // Dimension newPos = getNewPos(cx, cy, mx, my);
+        // cx = newPos.width;
+        // cy = newPos.height;
     }
 
     void moveMouse() {

@@ -5,6 +5,9 @@
 
 import javax.swing.*;
 import javax.swing.event.*;
+
+import sun.security.krb5.Config;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -98,7 +101,7 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		// set up board objects
 //		cat = new boardObject(catImg);
 //		cat.setType(3);
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
 		    boardObject catemp = new boardObject(catImg);
 		    catemp.setType(3);
 		    cat.add(catemp);
@@ -213,9 +216,12 @@ public class SwingApplet extends JApplet implements ActionListener,Runnable{
 		}
 
 		// draw objects (cat over mouse over cheese)
-		bp.setSquare(cheese, game.getCheese());
+//		bp.setSquare(cheese, game.getCheese());
+		for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
+		    bp.setSquare(cheese, game.getCheese(i));
+		}
 		bp.setSquare(mouse, game.getMouse());
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
             bp.setSquare(cat.get(i), game.getCat(i));
         }
 //		bp.setSquare(cat, game.getCat());
