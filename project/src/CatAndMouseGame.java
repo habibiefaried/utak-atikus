@@ -84,7 +84,7 @@ public class CatAndMouseGame extends Thread {
 			}
 		}
 		a.mousescore += world.mousescore;
-		a.catscore += world.catscore;
+//		a.catscore += world.catscore;
 		
 		// turn off gameOn flag if only single game
 		if (single) gameOn = false;
