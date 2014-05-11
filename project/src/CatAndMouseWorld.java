@@ -70,7 +70,7 @@ public class CatAndMouseWorld implements RLWorld {
             retDim[i++] = by;
         }
         retDim[i] = NUM_ACTIONS;
-        debug("X : " + bx + " Y : " + by);
+//        debug("X : " + bx + " Y : " + by);
         return retDim;
     }
 
@@ -185,7 +185,7 @@ public class CatAndMouseWorld implements RLWorld {
     public int[] resetState() {
         catscore = 0;
         mousescore = 0;
-        // setRandomPos();//set random position
+//        setRandomPos();//set random position
         setPosFromFile();
         return getState();
     }
@@ -279,10 +279,10 @@ public class CatAndMouseWorld implements RLWorld {
     boolean legal(int x, int y) {
         return ((x >= 0) && (x < bx) && (y >= 0) && (y < by)) && (!walls[x][y]);
     }
-
+    
     boolean endGame() {
-        // return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
-        // return ((cx == mx) && (cy == my));
+//         return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
+//         return ((cx == mx) && (cy == my));
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
             if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
                 return true;

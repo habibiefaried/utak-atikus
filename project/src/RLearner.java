@@ -93,12 +93,12 @@ public class RLearner {
 	
 	// execute one epoch
 	public void runEpoch() {
-	
+		System.out.println("run epoch Rleaner");
 		// Reset state to start position defined by the world.
 		state = thisWorld.resetState();
-		
+		System.out.println("Learning Method"+learningMethod);
 		switch( learningMethod ) {
-	    
+	  
 		case Q_LEARNING : {
 	    
 	    	double this_Q;
@@ -106,7 +106,7 @@ public class RLearner {
 		    double new_Q;
 
 			while( ! thisWorld.endState() ) {
-		    
+
 			    if( ! running ) break;
 					action = selectAction( state );
 		    		newstate = thisWorld.getNextState( action );
@@ -121,9 +121,11 @@ public class RLearner {
 
 				    // Set state to the new state.
 				    state = newstate;
+				    
+				    System.out.println(action+"=="+newstate+"=="+reward+"=="+new_Q);
 			}
 		
-	    
+			System.out.println("keluar Learning Method"+learningMethod);
 	    }
 
 	case SARSA : {
