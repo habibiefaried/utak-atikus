@@ -184,8 +184,8 @@ public class CatAndMouseWorld implements RLWorld {
     public int[] resetState() {
         catscore = 0;
         mousescore = 0;
-        setRandomPos();//set random position
-//        setPosFromFile();
+//        setRandomPos();//set random position
+        setPosFromFile();
         return getState();
     }
 
