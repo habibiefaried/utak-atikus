@@ -22,11 +22,10 @@ public class CatAndMouseWorld implements RLWorld {
 
     public int catscore = 0, mousescore = 0;
     public int cheeseReward, deathPenalty;
-
-    static final int NUM_OBJECTS = 6, NUM_ACTIONS = 8, WALL_TRIALS = 100;
+    static final int NUM_OBJECTS = 2, NUM_ACTIONS = 3, WALL_TRIALS = 100;
     static final double INIT_VALS = 0;
 
-    int[] stateArray;
+    int[] stateArrayBaru;
     double waitingReward;
     public boolean[][] walls;
 
@@ -84,7 +83,7 @@ public class CatAndMouseWorld implements RLWorld {
             mx = ax;
             my = ay;
             if (action == 1) {
-                System.out.println("jalan maju -1"+mousescore);
+                System.out.println("jalan maju -1" + mousescore);
                 mousescore--;
             }
             // debug("MoveX : "+mx+" MoveY : "+my);
@@ -107,7 +106,7 @@ public class CatAndMouseWorld implements RLWorld {
          * getRandomPos(); mx = d.width; my = d.height; }
          */
 
-        return getState();
+        return getStateBaru();
     }
 
     public double getReward(int i) {
@@ -175,7 +174,8 @@ public class CatAndMouseWorld implements RLWorld {
 
     // find action value given x,y=0,+-1
     int getAction(int x, int y) {
-        int[][] vals = { { 7, 0, 1 }, { 6, 0, 2 }, { 5, 4, 3 } };
+        System.out.println("masuk");
+        int[][] vals = { { 0 }, { 1 }, { 2 } };
         if ((x < -1) || (x > 1) || (y < -1) || (y > 1) || ((y == 0) && (x == 0)))
             return -1;
         int retVal = vals[y + 1][x + 1];
@@ -191,7 +191,7 @@ public class CatAndMouseWorld implements RLWorld {
         mousescore = 0;
         // setRandomPos();//set random position
         setPosFromFile();
-        return getState();
+        return getStateBaru();
     }
 
     public double getInitValues() {
@@ -200,34 +200,42 @@ public class CatAndMouseWorld implements RLWorld {
 
     /******* end RLWorld functions **********/
 
-    public int[] getState() {
-        // translates current state into int array
-        stateArray = new int[NUM_OBJECTS];
-        stateArray[0] = mx;
-        stateArray[1] = my;
-        stateArray[2] = 0;
-        stateArray[3] = 0;
-        stateArray[4] = chx;
-        stateArray[5] = chy;
-        return stateArray;
+    public int[] getStateBaru() {
+//         translates current state into int array
+//        NUM_OBJECTS = 2 + ConfigReader.getInstance().getJumlahKucing() * 2 + ConfigReader.getInstance().getJumlahKeju() * 2;
+        stateArrayBaru = new int[NUM_OBJECTS];
+//        stateArray[0] = mx;
+//        stateArray[1] = my;
+//        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
+//            stateArray[2*i+2] = catCoord.get(i).x;
+//            stateArray[2*i+3] = catCoord.get(i).y;
+//        }
+//        for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
+//            stateArray[2*i+(2 + ConfigReader.getInstance().getJumlahKucing() * 2)] = cheeseCoord.get(i).x;
+//            stateArray[2*i+(3 + ConfigReader.getInstance().getJumlahKucing() * 2)] = cheeseCoord.get(i).y;
+//        }
+        
+        stateArrayBaru[0] = 2; // jarak ke benda 
+        stateArrayBaru[1] = 3; // jenis benda
+        return stateArrayBaru;
     }
 
     public double calcReward() {
         double newReward = 0;
-        
+
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
             if (cheeseCoord.get(i).x == mx && cheeseCoord.get(i).y == my && !cheeseStatus.get(i)) {
                 mousescore += (MapReader.jmlBaris + MapReader.jmlKolom);
                 newReward += cheeseReward;
                 cheeseStatus.set(i, true);
-                System.out.println(":) dapet keju : "+mousescore);
+                System.out.println(":) dapet keju : " + mousescore);
             }
         }
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
             if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
                 mousescore -= (MapReader.jmlBaris + MapReader.jmlKolom);
                 newReward -= deathPenalty;
-                System.out.println(":( Ketemu kucing : "+mousescore);
+                System.out.println(":( Ketemu kucing : " + mousescore);
             }
         }
 
@@ -302,7 +310,7 @@ public class CatAndMouseWorld implements RLWorld {
     boolean legal(int x, int y) {
         if ((x >= 0) && (x < bx) && (y >= 0) && (y < by))
             if (walls[x][y]) {
-                System.out.println("Tabrak tembok :"+mousescore);
+                System.out.println("Tabrak tembok :" + mousescore);
                 mousescore -= 2;
             }
         return ((x >= 0) && (x < bx) && (y >= 0) && (y < by)) && (!walls[x][y]);
@@ -313,12 +321,7 @@ public class CatAndMouseWorld implements RLWorld {
         // return ((cx == mx) && (cy == my));
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
             if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
-                try {
-                    System.out.println("Game OVER");
-                    Thread.sleep(7000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                System.out.println("Game OVER");
                 return true;
             }
         }
@@ -330,12 +333,7 @@ public class CatAndMouseWorld implements RLWorld {
             }
         }
         if (allcheese) {
-            try {
-                System.out.println("Game OVER");
-                Thread.sleep(7000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            System.out.println("Game OVER");
             return true;
         }
         return false;
