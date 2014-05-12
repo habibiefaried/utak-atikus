@@ -51,7 +51,10 @@ public class CatAndMouseGame extends Thread {
             // System.out.println("Game playing. Making move.");
             int action = -1;
             if (mousetype == GREEDY) {
-                action = world.mouseAction();
+            	System.out.println("CatAndMouseGame.java:GREEDY:runGame");
+                action = policy.getBestAction(world.getStateBaru());
+                //action = world.mouseAction();
+                
                 //Random rnd = new Random();
                 //action = rnd.nextInt(3);
                 //switch (action) {
@@ -60,7 +63,9 @@ public class CatAndMouseGame extends Thread {
                 // case 2: System.out.println("right"); break;
                 //}
             } else if (mousetype == SMART) {
-                action = policy.getBestAction(world.getStateBaru());
+            	System.out.println("CatAndMouseGame.java:SMART:runGame");
+            	action = policy.getSmartAction(world.getStateBaru());
+//              action = policy.getBestAction(world.getStateBaru());
                 //Random rnd = new Random();
                 //action = rnd.nextInt(3);
                 //switch (action) {

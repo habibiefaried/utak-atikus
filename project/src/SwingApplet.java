@@ -153,7 +153,6 @@ public class SwingApplet extends JApplet implements ActionListener, Runnable {
     }
 
     public void worldInit(boolean[][] givenWalls) {
-        System.out.println("TRAINING BIE....");
         int xdim = givenWalls.length, ydim = givenWalls[0].length;
         trainWorld = new CatAndMouseWorld(xdim, ydim, givenWalls);
         gameInit(xdim, ydim);
