@@ -9,6 +9,7 @@ public class CatAndMouseWorld implements RLWorld {
 
     ArrayList<ArrayList<Point>> catPos = new ArrayList<ArrayList<Point>>();
     ArrayList<ArrayList<Point>> cheesePos = new ArrayList<ArrayList<Point>>();
+    public ArrayList<Boolean> cheeseStatus = new ArrayList<Boolean>();
     public ArrayList<Point> catCoord = new ArrayList<Point>();
     public ArrayList<Point> cheeseCoord = new ArrayList<Point>();
 
@@ -21,11 +22,10 @@ public class CatAndMouseWorld implements RLWorld {
 
     public int catscore = 0, mousescore = 0;
     public int cheeseReward, deathPenalty;
-
-    static final int NUM_OBJECTS = 6, NUM_ACTIONS = 8, WALL_TRIALS = 100;
+    static final int NUM_OBJECTS = 2, NUM_ACTIONS = 3, WALL_TRIALS = 100;
     static final double INIT_VALS = 0;
 
-    int[] stateArray;
+    int[] stateArrayBaru;
     double waitingReward;
     public boolean[][] walls;
 
@@ -42,7 +42,8 @@ public class CatAndMouseWorld implements RLWorld {
         makeWalls(x, y, numWalls);
         cheeseReward = x + y; // Kode tambahan
         deathPenalty = x + y; // Kode tambahan
-        resetState();
+        System.out.println("TRAINING...........");
+        resetState(1);
     }
 
     public CatAndMouseWorld(int x, int y, boolean[][] newwalls) {
@@ -50,9 +51,9 @@ public class CatAndMouseWorld implements RLWorld {
         by = y;
 
         walls = newwalls;
-
-        resetState();
-
+        
+        System.out.println("PLAY...........");
+        resetState(0);
 
         // cheeseCoord.clear();
         // Random rnd = new Random();
@@ -70,7 +71,7 @@ public class CatAndMouseWorld implements RLWorld {
             retDim[i++] = by;
         }
         retDim[i] = NUM_ACTIONS;
-//        debug("X : " + bx + " Y : " + by);
+        // debug("X : " + bx + " Y : " + by);
         return retDim;
     }
 
@@ -83,6 +84,10 @@ public class CatAndMouseWorld implements RLWorld {
             // move agent
             mx = ax;
             my = ay;
+            if (action == 1) {
+                mousescore--;
+//                System.out.println("jalan maju" + mousescore);
+            }
             // debug("MoveX : "+mx+" MoveY : "+my);
         } else {
             // System.err.println("Illegal action: "+action);
@@ -103,7 +108,7 @@ public class CatAndMouseWorld implements RLWorld {
          * getRandomPos(); mx = d.width; my = d.height; }
          */
 
-        return getState();
+        return getStateBaru();
     }
 
     public double getReward(int i) {
@@ -171,7 +176,8 @@ public class CatAndMouseWorld implements RLWorld {
 
     // find action value given x,y=0,+-1
     int getAction(int x, int y) {
-        int[][] vals = { { 7, 0, 1 }, { 6, 0, 2 }, { 5, 4, 3 } };
+        System.out.println("masuk");
+        int[][] vals = { { 0 }, { 1 }, { 2 } };
         if ((x < -1) || (x > 1) || (y < -1) || (y > 1) || ((y == 0) && (x == 0)))
             return -1;
         int retVal = vals[y + 1][x + 1];
@@ -182,12 +188,12 @@ public class CatAndMouseWorld implements RLWorld {
         return endGame();
     }
 
-    public int[] resetState() {
+    public int[] resetState(int play_or_train) {
         catscore = 0;
         mousescore = 0;
-//        setRandomPos();//set random position
-        setPosFromFile();
-        return getState();
+        // setRandomPos();//set random position
+        setPosFromFile(play_or_train);
+        return getStateBaru();
     }
 
     public double getInitValues() {
@@ -195,25 +201,145 @@ public class CatAndMouseWorld implements RLWorld {
     }
 
     /******* end RLWorld functions **********/
-
-    public int[] getState() {
-        // translates current state into int array
-        stateArray = new int[NUM_OBJECTS];
-        stateArray[0] = mx;
-        stateArray[1] = my;
-        stateArray[2] = 0;
-        stateArray[3] = 0;
-        stateArray[4] = chx;
-        stateArray[5] = chy;
-        return stateArray;
+    public ArrayList<Point> allowed = new ArrayList<Point>();
+    public int distanceObject;
+    public int typeObject;
+    
+    public void getAllowed() {
+        ConfigReader cr = ConfigReader.getInstance();
+        allowed.clear() ;
+        for (int i = 0; i < cr.getBatasPenglihatan() + 1; i++) {
+            if (i == 0) {
+                allowed.add(new Point(mx, my));
+            } else {
+                switch (arah) {
+                case 0:
+                    allowed.add(new Point(mx, my - i));
+                    break;
+                case 1:
+                    allowed.add(new Point(mx + i, my - i));
+                    break;
+                case 2:
+                    allowed.add(new Point(mx + i, my));
+                    break;
+                case 3:
+                    allowed.add(new Point(mx + i, my + i));
+                    break;
+                case 4:
+                    allowed.add(new Point(mx, my + i));
+                    break;
+                case 5:
+                    allowed.add(new Point(mx - i, my + i));
+                    break;
+                case 6:
+                    allowed.add(new Point(mx - i, my));
+                    break;
+                case 7:
+                    allowed.add(new Point(mx - i, my - i));
+                    break;
+                }
+            }
+        }
+    }
+    
+    public void getNearestObject() {
+        for (int i = 0; i < allowed.size(); i++) {
+            Point poin = allowed.get(i);
+            //cek kucing
+            for (int j = 0; j < ConfigReader.getInstance().getJumlahKucing(); j++) {
+                if (catCoord.get(j).x == poin.x && catCoord.get(j).y == poin.y) {
+                    distanceObject = i+1;
+                    typeObject = 3;
+                    return;
+                }
+            }
+            //cek keju            
+            for (int j = 0; j < ConfigReader.getInstance().getJumlahKeju(); j++) {
+                if (cheeseCoord.get(j).x == poin.x && cheeseCoord.get(j).y == poin.y && !cheeseStatus.get(j)) {
+                    distanceObject = i+1;
+                    typeObject = 2;
+                    return;
+                }
+            }
+            
+            //cek tembok
+            if (isInbound(poin)) {
+                if (MapReader.wallsMap[poin.y][poin.x]) {
+                    distanceObject = i+1;
+                    typeObject = 4;
+                    System.out.println("ADA TEMBOK :");
+                    System.out.println(poin.x + ", " + poin.y);
+                    return;
+                }
+            } else {
+                distanceObject = i+1;
+                typeObject = 6;
+                return;
+            }
+        }        
+        distanceObject = 0;
+        typeObject = 0;
+    }
+        
+    public boolean isInbound(Point poin) {
+        return poin.x > 0 && poin.y > 0 && poin.x < MapReader.jmlKolom && poin.y < MapReader.jmlBaris;
+    }
+    
+    
+    public int[] getStateBaru() {
+//         translates current state into int array
+//        NUM_OBJECTS = 2 + ConfigReader.getInstance().getJumlahKucing() * 2 + ConfigReader.getInstance().getJumlahKeju() * 2;
+        stateArrayBaru = new int[NUM_OBJECTS];
+//        stateArray[0] = mx;
+//        stateArray[1] = my;
+//        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
+//            stateArray[2*i+2] = catCoord.get(i).x;
+//            stateArray[2*i+3] = catCoord.get(i).y;
+//        }
+//        for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
+//            stateArray[2*i+(2 + ConfigReader.getInstance().getJumlahKucing() * 2)] = cheeseCoord.get(i).x;
+//            stateArray[2*i+(3 + ConfigReader.getInstance().getJumlahKucing() * 2)] = cheeseCoord.get(i).y;
+//        }
+        getAllowed();
+        getNearestObject();
+        stateArrayBaru[0] = distanceObject; // jarak ke benda 
+        stateArrayBaru[1] = typeObject; // jenis benda
+        
+//        System.out.println("----");
+//        System.out.println(stateArrayBaru[0]);
+//        System.out.println(stateArrayBaru[1]);
+//        System.out.println("----");
+        
+        //kucing = 3
+        //keju = 2
+        //tembok = 4
+        
+        return stateArrayBaru;
     }
 
     public double calcReward() {
         double newReward = 0;
-        if ((mx == chx) && (my == chy)) {
-            mousescore++;
-            newReward += cheeseReward;
+
+        for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
+            if (cheeseCoord.get(i).x == mx && cheeseCoord.get(i).y == my && !cheeseStatus.get(i)) {
+                mousescore += (MapReader.jmlBaris + MapReader.jmlKolom);
+                newReward += cheeseReward;
+                cheeseStatus.set(i, true);
+                System.out.println(":) dapet keju : " + mousescore);
+            }
         }
+        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
+            if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
+                mousescore -= (MapReader.jmlBaris + MapReader.jmlKolom);
+                newReward -= deathPenalty;
+                System.out.println(":( Ketemu kucing : " + mousescore);
+            }
+        }
+
+        // if ((mx == chx) && (my == chy)) {
+        // // mousescore++;
+        // newReward += cheeseReward;
+        // }
         // if ((cx == mx) && (cy == my)) {
         // catscore++;
         // newReward -= deathPenalty;
@@ -238,12 +364,12 @@ public class CatAndMouseWorld implements RLWorld {
         hy = d.height;
     }
 
-    public void setPosFromFile() {
+    public void setPosFromFile(int play_or_train) {
         ConfigReader conf = ConfigReader.getInstance();
         Dimension d = getRandomPos();
         Point p;
-        
-        catPos = ConfigReader.getInstance().getArrayPosisiKucing(0);
+
+        catPos = ConfigReader.getInstance().getArrayPosisiKucing(play_or_train);
         catCoord.clear();
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
             Point baru = (Point) catPos.get(currentEpisode).get(i).clone();
@@ -251,25 +377,27 @@ public class CatAndMouseWorld implements RLWorld {
             baru.y -= 1;
             catCoord.add(baru);
         }
-        
-        cheesePos = ConfigReader.getInstance().getArrayPosisiKeju(0);
+
+        cheesePos = ConfigReader.getInstance().getArrayPosisiKeju(play_or_train);
         cheeseCoord.clear();
+        cheeseStatus.clear();
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
             Point baru = (Point) cheesePos.get(currentEpisode).get(i).clone();
             baru.x -= 1;
             baru.y -= 1;
             cheeseCoord.add(baru);
+            cheeseStatus.add(false);
         }
-        
-//        p = conf.getArrayPosisiKucing(0).get(0).get(0);
-//        cx = (int) p.getX();
-//        cy = (int) p.getY();
+
+        // p = conf.getArrayPosisiKucing(0).get(0).get(0);
+        // cx = (int) p.getX();
+        // cy = (int) p.getY();
         p = conf.getArrayPosisiTikus(0).get(0);
         mx = (int) p.getX() - 1;
         my = (int) p.getY() - 1;
-//        p = conf.getArrayPosisiKeju(0).get(0).get(0);
-//        chx = (int) p.getX();
-//        chy = (int) p.getY();
+        // p = conf.getArrayPosisiKeju(0).get(0).get(0);
+        // chx = (int) p.getX();
+        // chy = (int) p.getY();
 
         d = getRandomPos();
         hx = d.width;
@@ -277,18 +405,45 @@ public class CatAndMouseWorld implements RLWorld {
     }
 
     boolean legal(int x, int y) {
+        if ((x >= 0) && (x < bx) && (y >= 0) && (y < by))
+            if (walls[x][y]) {
+                mousescore -= 2;
+                //System.out.println("Tabrak tembok :" + mousescore);
+            }
         return ((x >= 0) && (x < bx) && (y >= 0) && (y < by)) && (!walls[x][y]);
     }
-    
+
     boolean endGame() {
-//         return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
-         return ((cx == mx) && (cy == my));
-//        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
-//            if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
-//                return true;
+        // return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
+//         return ((cx == mx) && (cy == my));
+        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
+            if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
+                System.out.println("Game OVER");
+//                currentEpisode++;
+//                if (currentEpisode > 10) {
+//                    System.out.println("10 Episode done");
+//                    currentEpisode = 0;
+//                }
+                return true;
+            }
+        }
+        boolean allcheese = true;
+        for (int i = 0; i < cheeseStatus.size(); i++) {
+            if (!cheeseStatus.get(i)) {
+                allcheese = false;
+                break;
+            }
+        }
+        if (allcheese) {
+            System.out.println("Game OVER");
+//            currentEpisode++;
+//            if (currentEpisode > 10) {
+//                System.out.println("10 Episode done");
+//                currentEpisode = 0;
 //            }
-//        }
-//        return false;
+            return true;
+        }
+        return false;
     }
 
     Dimension getRandomPos() {
