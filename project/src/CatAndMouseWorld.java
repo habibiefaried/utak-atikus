@@ -282,13 +282,13 @@ public class CatAndMouseWorld implements RLWorld {
     
     boolean endGame() {
 //         return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
-//         return ((cx == mx) && (cy == my));
-        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
-            if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
-                return true;
-            }
-        }
-        return false;
+         return ((cx == mx) && (cy == my));
+//        for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
+//            if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     Dimension getRandomPos() {
