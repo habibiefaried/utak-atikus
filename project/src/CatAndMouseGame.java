@@ -71,6 +71,7 @@ public class CatAndMouseGame extends Thread {
             } else {
                 System.err.println("Invalid mouse type:" + mousetype);
             }
+//            System.out.println(world.mx + ", " + world.my + ", arah: "+world.arah);
             world.getNextState(action);
             a.mousescore = world.mousescore;
 

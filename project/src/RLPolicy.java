@@ -1,5 +1,6 @@
 import java.lang.reflect.*;
 import java.lang.*;
+import java.util.Random;
 
 public class RLPolicy {
 
@@ -134,45 +135,94 @@ public class RLPolicy {
     }
 
     public int getBestAction(int[] state) {
-
-        double maxQ = -Double.MAX_VALUE;
-        int selectedAction = -1;
-        int[] doubleValues = new int[qValues.length];
-        int maxDV = 0;
-
-        qValues = myQValues(state);
-
-        for (int action = 0; action < qValues.length; action++) {
-            // System.out.println( "STATE: [" + state[0] + "," + state[1] + "]"
-            // );
-            // System.out.println( "action:qValue, maxQ " + action + ":" +
-            // qValues[action] + "," + maxQ );
-
-            if (qValues[action] > maxQ) {
-                selectedAction = action;
-                maxQ = qValues[action];
-                maxDV = 0;
-                doubleValues[maxDV] = selectedAction;
-            } else if (qValues[action] == maxQ) {
-                maxDV++;
-                doubleValues[maxDV] = action;
+//        double maxQ = -Double.MAX_VALUE;
+//        int selectedAction = -1;
+//        int[] doubleValues = new int[qValues.length];
+//        int maxDV = 0;
+//
+//        qValues = myQValues(state);
+//
+//        for (int action = 0; action < qValues.length; action++) {
+//            // System.out.println( "STATE: [" + state[0] + "," + state[1] + "]"
+//            // );
+//            // System.out.println( "action:qValue, maxQ " + action + ":" +
+//            // qValues[action] + "," + maxQ );
+//
+//            if (qValues[action] > maxQ) {
+//                selectedAction = action;
+//                maxQ = qValues[action];
+//                maxDV = 0;
+//                doubleValues[maxDV] = selectedAction;
+//            } else if (qValues[action] == maxQ) {
+//                maxDV++;
+//                doubleValues[maxDV] = action;
+//            }
+//        }
+//
+//        if (maxDV > 0) {
+//            // System.out.println( "DOUBLE values, random selection, maxdv =" +
+//            // maxDV );
+//            int randomIndex = (int) (Math.random() * (maxDV + 1));
+//            selectedAction = doubleValues[randomIndex];
+//        }
+//
+//        if (selectedAction == -1) {
+//            // System.out.println("RANDOM Choice !" );
+//            selectedAction = (int) (Math.random() * qValues.length);
+//        }
+        System.out.println("----");
+        System.out.println(state[0]);
+        System.out.println(state[1]);
+        
+        if (state[1] == 3) {
+            System.out.println("----- kucing ----------");
+            Random rn = new Random();
+            int tes = rn.nextInt(10);
+            if (tes % 2 == 0) {
+                return 0;
+            } else {
+                return 2;
             }
         }
-
-        if (maxDV > 0) {
-            // System.out.println( "DOUBLE values, random selection, maxdv =" +
-            // maxDV );
-            int randomIndex = (int) (Math.random() * (maxDV + 1));
-            selectedAction = doubleValues[randomIndex];
+        
+        if (state[1] == 2) {
+            System.out.println("----- keju ----------");
+            return 1;
         }
-
-        if (selectedAction == -1) {
-            // System.out.println("RANDOM Choice !" );
-            selectedAction = (int) (Math.random() * qValues.length);
+        
+        if (state[1] == 4) {
+            System.out.println("----- tembok ----------");
+            if (state[0] == 1) { 
+                Random rn = new Random();
+                int tes = rn.nextInt(10);
+                if (tes % 2 == 0) {
+                    return 0;
+                } else {
+                    return 2;
+                }
+            }
         }
-
-        return selectedAction;
-
+        
+        if (state[1] == 6) {
+            System.out.println("----- ujung ----------");
+            if (state[0] == 1) {
+                Random rn = new Random();
+                int tes = rn.nextInt(10);
+                if (tes % 2 == 0) {
+                    return 0;
+                } else {
+                    return 2;
+                }
+            } else {
+                return 1;
+            }
+        } else {   
+            System.out.println("----- maju ----------");
+            return 1;
+        }
+        
+        
+//        return selectedAction;
     }
 
     /*
