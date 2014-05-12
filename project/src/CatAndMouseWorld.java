@@ -42,7 +42,8 @@ public class CatAndMouseWorld implements RLWorld {
         makeWalls(x, y, numWalls);
         cheeseReward = x + y; // Kode tambahan
         deathPenalty = x + y; // Kode tambahan
-        resetState();
+        System.out.println("TRAINING...........");
+        resetState(1);
     }
 
     public CatAndMouseWorld(int x, int y, boolean[][] newwalls) {
@@ -50,8 +51,9 @@ public class CatAndMouseWorld implements RLWorld {
         by = y;
 
         walls = newwalls;
-
-        resetState();
+        
+        System.out.println("PLAY...........");
+        resetState(0);
 
         // cheeseCoord.clear();
         // Random rnd = new Random();
@@ -186,11 +188,11 @@ public class CatAndMouseWorld implements RLWorld {
         return endGame();
     }
 
-    public int[] resetState() {
+    public int[] resetState(int play_or_train) {
         catscore = 0;
         mousescore = 0;
         // setRandomPos();//set random position
-        setPosFromFile();
+        setPosFromFile(play_or_train);
         return getStateBaru();
     }
 
@@ -215,8 +217,8 @@ public class CatAndMouseWorld implements RLWorld {
 //            stateArray[2*i+(3 + ConfigReader.getInstance().getJumlahKucing() * 2)] = cheeseCoord.get(i).y;
 //        }
         
-        stateArrayBaru[0] = 2; // jarak ke benda 
-        stateArrayBaru[1] = 3; // jenis benda
+        stateArrayBaru[0] = mx; // jarak ke benda 
+        stateArrayBaru[1] = my; // jenis benda
         return stateArrayBaru;
     }
 
@@ -267,12 +269,12 @@ public class CatAndMouseWorld implements RLWorld {
         hy = d.height;
     }
 
-    public void setPosFromFile() {
+    public void setPosFromFile(int play_or_train) {
         ConfigReader conf = ConfigReader.getInstance();
         Dimension d = getRandomPos();
         Point p;
 
-        catPos = ConfigReader.getInstance().getArrayPosisiKucing(0);
+        catPos = ConfigReader.getInstance().getArrayPosisiKucing(play_or_train);
         catCoord.clear();
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
             Point baru = (Point) catPos.get(currentEpisode).get(i).clone();
@@ -281,7 +283,7 @@ public class CatAndMouseWorld implements RLWorld {
             catCoord.add(baru);
         }
 
-        cheesePos = ConfigReader.getInstance().getArrayPosisiKeju(0);
+        cheesePos = ConfigReader.getInstance().getArrayPosisiKeju(play_or_train);
         cheeseCoord.clear();
         cheeseStatus.clear();
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKeju(); i++) {
@@ -318,7 +320,7 @@ public class CatAndMouseWorld implements RLWorld {
 
     boolean endGame() {
         // return (((mx==hx)&&(my==hy)&& gotCheese) || ((cx==mx) && (cy==my)));
-        // return ((cx == mx) && (cy == my));
+//         return ((cx == mx) && (cy == my));
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
             if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
                 System.out.println("Game OVER");

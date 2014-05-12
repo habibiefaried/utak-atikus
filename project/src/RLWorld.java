@@ -21,7 +21,7 @@ public interface RLWorld {
     boolean endState();
 
     // Resets the current state to the start position and returns that state.
-    int[] resetState();
+    int[] resetState(int play_or_train);
     
     // Gets the initial value for the policy.
     double getInitValues();

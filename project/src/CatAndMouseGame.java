@@ -143,6 +143,6 @@ public class CatAndMouseGame extends Thread {
     }
 
     public void resetGame() {
-        world.resetState();
+        world.resetState(0);
     }
 }
