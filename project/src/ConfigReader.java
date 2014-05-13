@@ -37,7 +37,6 @@ public class ConfigReader {
 	        try {
 	            fis = new FileInputStream("tabel.txt");
 	            reader = new BufferedReader(new InputStreamReader(fis));       
-	            System.out.println("Reading tabel");
 	            
                 //read batas penglihatan
                 batas_penglihatan = Integer.parseInt(reader.readLine());

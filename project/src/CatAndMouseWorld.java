@@ -52,7 +52,6 @@ public class CatAndMouseWorld implements RLWorld {
 
         walls = newwalls;
         
-        System.out.println("PLAY...........");
         resetState(0);
 
         // cheeseCoord.clear();
@@ -176,7 +175,7 @@ public class CatAndMouseWorld implements RLWorld {
 
     // find action value given x,y=0,+-1
     int getAction(int x, int y) {
-        System.out.println("masuk");
+        System.out.println("CatAndMouseWorld.java:getAction");
         int[][] vals = { { 0 }, { 1 }, { 2 } };
         if ((x < -1) || (x > 1) || (y < -1) || (y > 1) || ((y == 0) && (x == 0)))
             return -1;

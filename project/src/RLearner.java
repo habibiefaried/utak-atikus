@@ -99,7 +99,7 @@ public class RLearner {
         System.out.println("run epoch Rleaner");
         // Reset state to start position defined by the world.
         state = thisWorld.resetState(1);
-        System.out.println("Learning Method" + learningMethod);
+
         switch (learningMethod) {
 
         case Q_LEARNING: {
@@ -126,10 +126,8 @@ public class RLearner {
                 // Set state to the new state.
                 state = newstate;
 
-                //System.out.println(action + "==" + newstate + "==" + reward + "==" + new_Q);
             }
 
-            System.out.println("keluar Learning Method" + learningMethod);
         }
 
         case SARSA: {
