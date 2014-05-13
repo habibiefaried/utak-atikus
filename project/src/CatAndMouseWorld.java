@@ -248,31 +248,36 @@ public class CatAndMouseWorld implements RLWorld {
             //cek kucing
             for (int j = 0; j < ConfigReader.getInstance().getJumlahKucing(); j++) {
                 if (catCoord.get(j).x == poin.x && catCoord.get(j).y == poin.y) {
-                    distanceObject = i+1;
+                    distanceObject = i;
                     typeObject = 3;
+                    
+                    System.out.println("ADA KUCING:");
+                    System.out.println(poin.x + ", " + poin.y);
                     return;
                 }
             }
             //cek keju            
             for (int j = 0; j < ConfigReader.getInstance().getJumlahKeju(); j++) {
                 if (cheeseCoord.get(j).x == poin.x && cheeseCoord.get(j).y == poin.y && !cheeseStatus.get(j)) {
-                    distanceObject = i+1;
+                    distanceObject = i;
                     typeObject = 2;
+                    System.out.println("ADA KEJU:");
+                    System.out.println(poin.x + ", " + poin.y);
                     return;
                 }
             }
             
             //cek tembok
             if (isInbound(poin)) {
-                if (MapReader.wallsMap[poin.y][poin.x]) {
-                    distanceObject = i+1;
+                if (MapReader.wallsMap[poin.x][poin.y]) {
+                    distanceObject = i;
                     typeObject = 4;
                     System.out.println("ADA TEMBOK :");
                     System.out.println(poin.x + ", " + poin.y);
                     return;
                 }
             } else {
-                distanceObject = i+1;
+                distanceObject = i;
                 typeObject = 6;
                 return;
             }
@@ -282,7 +287,7 @@ public class CatAndMouseWorld implements RLWorld {
     }
         
     public boolean isInbound(Point poin) {
-        return poin.x > 0 && poin.y > 0 && poin.x < MapReader.jmlKolom && poin.y < MapReader.jmlBaris;
+        return poin.x >= 0 && poin.y >= 0 && poin.x < MapReader.jmlKolom && poin.y < MapReader.jmlBaris;
     }
     
     
@@ -501,8 +506,61 @@ public class CatAndMouseWorld implements RLWorld {
     }
 
     int mouseAction() {
-        Dimension newPos = getNewPos(mx, my, chx, chy);
-        return getAction(newPos.width - mx, newPos.height - my);
+        int[] state = getStateBaru();
+//        Dimension newPos = getNewPos(mx, my, chx, chy);
+//        return getAction(newPos.width - mx, newPos.height - my);
+        if (state[1] == 3) {
+            if (state[0] == 1) {
+                Random rn = new Random();
+                int tes = rn.nextInt(10);
+                if (tes % 2 == 0) {
+                    return 0;
+                } else {
+                    return 2;
+                }
+            }
+        }
+        
+        if (state[1] == 2) {
+            return 1;
+        }
+        
+        if (state[1] == 4) {
+            if (state[0] == 1) { 
+                Random rn = new Random();
+                int tes = rn.nextInt(10);
+                if (tes % 2 == 0) {
+                    return 0;
+                } else {
+                    return 2;
+                }
+            }
+        }
+        
+        if (state[1] == 6) {
+            if (state[0] == 1) {
+                Random rn = new Random();
+                int tes = rn.nextInt(10);
+                if (tes % 2 == 0) {
+                    return 0;
+                } else {
+                    return 2;
+                }
+            } else {
+                return 1;
+            }
+        }   
+        
+        Random rn = new Random();
+        int tes = rn.nextInt(10);
+        if (tes <= 4) {
+            return 1;
+        } else if (tes <= 7){
+            return 0;
+        } else {
+            return 2;
+        }
+        
     }
 
     /******** end heuristic functions ***********/

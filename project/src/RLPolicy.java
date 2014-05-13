@@ -170,28 +170,24 @@ public class RLPolicy {
 //            // System.out.println("RANDOM Choice !" );
 //            selectedAction = (int) (Math.random() * qValues.length);
 //        }
-        System.out.println("----");
-        System.out.println(state[0]);
-        System.out.println(state[1]);
         
         if (state[1] == 3) {
-            System.out.println("----- kucing ----------");
-            Random rn = new Random();
-            int tes = rn.nextInt(10);
-            if (tes % 2 == 0) {
-                return 0;
-            } else {
-                return 2;
+            if (state[0] == 1) {
+                Random rn = new Random();
+                int tes = rn.nextInt(10);
+                if (tes % 2 == 0) {
+                    return 0;
+                } else {
+                    return 2;
+                }
             }
         }
         
         if (state[1] == 2) {
-            System.out.println("----- keju ----------");
             return 1;
         }
         
         if (state[1] == 4) {
-            System.out.println("----- tembok ----------");
             if (state[0] == 1) { 
                 Random rn = new Random();
                 int tes = rn.nextInt(10);
@@ -204,7 +200,6 @@ public class RLPolicy {
         }
         
         if (state[1] == 6) {
-            System.out.println("----- ujung ----------");
             if (state[0] == 1) {
                 Random rn = new Random();
                 int tes = rn.nextInt(10);
@@ -216,10 +211,9 @@ public class RLPolicy {
             } else {
                 return 1;
             }
-        } else {   
-            System.out.println("----- maju ----------");
-            return 1;
-        }
+        }   
+        
+        return 1;
         
         
 //        return selectedAction;
