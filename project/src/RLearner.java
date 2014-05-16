@@ -4,439 +4,441 @@ import java.lang.reflect.*;
 
 public class RLearner {
 
-    RLWorld thisWorld;
-    RLPolicy policy;
+	RLWorld thisWorld;
+	RLPolicy policy;
 
-    // Learning types
-    public static final int Q_LEARNING = 1;
-    public static final int SARSA = 2;
-    public static final int Q_LAMBDA = 3; // Good parms were lambda=0.05,
-                                          // gamma=0.1, alpha=0.01, epsilon=0.1
+	// Learning types
+	public static final int Q_LEARNING = 1;
+	public static final int SARSA = 2;
+	public static final int Q_LAMBDA = 3; // Good parms were lambda=0.05,
+											// gamma=0.1, alpha=0.01,
+											// epsilon=0.1
 
-    // Action selection types
-    public static final int E_GREEDY = 1;
-    public static final int SOFTMAX = 2;
+	// Action selection types
+	public static final int E_GREEDY = 1;
+	public static final int SOFTMAX = 2;
 
-    int learningMethod;
-    int actionSelection;
+	int learningMethod;
+	int actionSelection;
 
-    double epsilon;
-    double temp;
+	double epsilon;
+	double temp;
 
-    double alpha;
-    double gamma;
-    double lambda;
+	double alpha;
+	double gamma;
+	double lambda;
 
-    int[] dimSize;
-    int[] state;
-    int[] newstate;
-    int action;
-    double reward;
+	int[] dimSize;
+	int[] state;
+	int[] newstate;
+	int action;
+	double reward;
 
-    int epochs;
-    public int epochsdone;
+	int epochs;
+	public int epochsdone;
 
-    Thread thisThread;
-    public boolean running;
+	Thread thisThread;
+	public boolean running;
 
-    Vector trace = new Vector();
-    int[] saPair;
+	Vector trace = new Vector();
+	int[] saPair;
 
-    long timer;
+	long timer;
 
-    boolean random = false;
-    Runnable a;
+	boolean random = false;
+	Runnable a;
 
-    public RLearner(RLWorld world) {
-        // Getting the world from the invoking method.
-        thisWorld = world;
+	public RLearner(RLWorld world) {
+		// Getting the world from the invoking method.
+		thisWorld = world;
 
-        // Get dimensions of the world.
-        dimSize = thisWorld.getDimension();
+		// Get dimensions of the world.
+		dimSize = thisWorld.getDimension();
 
-        // Creating new policy with dimensions to suit the world.
-        policy = new RLPolicy(dimSize);
+		// Creating new policy with dimensions to suit the world.
+		policy = new RLPolicy(dimSize);
 
-        // Initializing the policy with the initial values defined by the world.
-        policy.initValues(thisWorld.getInitValues());
+		// Initializing the policy with the initial values defined by the world.
+		policy.initValues(thisWorld.getInitValues());
 
-        learningMethod = Q_LEARNING; // Q_LAMBDA;//SARSA;
-        actionSelection = E_GREEDY;
+		learningMethod = Q_LEARNING; // Q_LAMBDA;//SARSA;
+		actionSelection = E_GREEDY;
 
-        // set default values
-        epsilon = 0.1;
-        temp = 1;
+		// set default values
+		epsilon = 0.1;
+		temp = 1;
 
-        alpha = 1; // For CliffWorld alpha = 1 is good
-        gamma = 0.1;
-        lambda = 0.1; // For CliffWorld gamma = 0.1, l = 0.5 (l*g=0.05)is a good
-                      // choice.
+		alpha = 1; // For CliffWorld alpha = 1 is good
+		gamma = 0.1;
+		lambda = 0.1; // For CliffWorld gamma = 0.1, l = 0.5 (l*g=0.05)is a good
+						// choice.
 
-        System.out.println("RLearner initialised");
+		System.out.println("RLearner initialised");
 
-    }
+	}
 
-    // execute one trial
-    public void runTrial() {
-        System.out.println("Learning! (" + epochs + " epochs)\n");
-        for (int i = 0; i < epochs; i++) {
-            if (!running)
-                break;
+	// execute one trial
+	public void runTrial() {
+		System.out.println("Learning! (" + epochs + " epochs)\n");
+		for (int i = 0; i < epochs; i++) {
+			if (!running)
+				break;
 
-            runEpoch();
+			runEpoch();
 
-            if (i % 1000 == 0) {
-                // give text output
-                timer = (System.currentTimeMillis() - timer);
-                System.out.println("Epoch:" + i + " : " + timer);
-                timer = System.currentTimeMillis();
-            }
-        }
-    }
+			if (i % 1000 == 0) {
+				// give text output
+				timer = (System.currentTimeMillis() - timer);
+				System.out.println("Epoch:" + i + " : " + timer);
+				timer = System.currentTimeMillis();
+			}
+		}
+	}
 
-    // execute one epoch
-    public void runEpoch() {
-        System.out.println("run epoch Rleaner");
-        // Reset state to start position defined by the world.
-        state = thisWorld.resetState(1);
+	// execute one epoch
+	public void runEpoch() {
+		System.out.println("run epoch Rleaner");
+		// Reset state to start position defined by the world.
+		state = thisWorld.resetState(1);
 
-        switch (learningMethod) {
+		switch (learningMethod) {
 
-        case Q_LEARNING: {
+		case Q_LEARNING: {
 
-            double this_Q;
-            double max_Q;
-            double new_Q;
+			double this_Q;
+			double max_Q;
+			double new_Q;
 
-            while (!thisWorld.endState()) {
+			while (!thisWorld.endState()) {
 
-                if (!running)
-                    break;
-                action = selectAction(state);
-                newstate = thisWorld.getNextState(action);
-                reward = thisWorld.getReward();
+				if (!running)
+					break;
+				action = selectAction(state);
+				newstate = thisWorld.getNextState(action);
+				reward = thisWorld.getReward();
 
-                this_Q = policy.getQValue(state, action);
-                max_Q = policy.getMaxQValue(newstate);
+				this_Q = policy.getQValue(state, action);
+				max_Q = policy.getMaxQValue(newstate);
 
-                // Calculate new Value for Q
-                new_Q = this_Q + alpha * (reward + gamma * max_Q - this_Q);
-                policy.setQValue(state, action, new_Q);
+				// Calculate new Value for Q
+				new_Q = this_Q + alpha * (reward + gamma * max_Q - this_Q);
+				policy.setQValue(state, action, new_Q);
 
-                // Set state to the new state.
-                state = newstate;
+				// Set state to the new state.
+				state = newstate;
 
-            }
+			}
 
-        }
+		}
 
-        case SARSA: {
+		case SARSA: {
 
-            int newaction;
-            double this_Q;
-            double next_Q;
-            double new_Q;
+			int newaction;
+			double this_Q;
+			double next_Q;
+			double new_Q;
 
-            action = selectAction(state);
-            while (!thisWorld.endState()) {
+			action = selectAction(state);
+			while (!thisWorld.endState()) {
 
-                if (!running)
-                    break;
+				if (!running)
+					break;
 
-                newstate = thisWorld.getNextState(action);
-                reward = thisWorld.getReward();
+				newstate = thisWorld.getNextState(action);
+				reward = thisWorld.getReward();
 
-                newaction = selectAction(newstate);
+				newaction = selectAction(newstate);
 
-                this_Q = policy.getQValue(state, action);
-                next_Q = policy.getQValue(newstate, newaction);
+				this_Q = policy.getQValue(state, action);
+				next_Q = policy.getQValue(newstate, newaction);
 
-                new_Q = this_Q + alpha * (reward + gamma * next_Q - this_Q);
+				new_Q = this_Q + alpha * (reward + gamma * next_Q - this_Q);
 
-                policy.setQValue(state, action, new_Q);
+				policy.setQValue(state, action, new_Q);
 
-                // Set state to the new state and action to the new action.
-                state = newstate;
-                action = newaction;
-            }
+				// Set state to the new state and action to the new action.
+				state = newstate;
+				action = newaction;
+			}
 
-        }
+		}
 
-        case Q_LAMBDA: {
+		case Q_LAMBDA: {
 
-            double max_Q;
-            double this_Q;
-            double new_Q;
-            double delta;
+			double max_Q;
+			double this_Q;
+			double new_Q;
+			double delta;
 
-            // Remove all eligibility traces.
-            trace.removeAllElements();
+			// Remove all eligibility traces.
+			trace.removeAllElements();
 
-            while (!thisWorld.endState()) {
+			while (!thisWorld.endState()) {
 
-                if (!running)
-                    break;
+				if (!running)
+					break;
 
-                action = selectAction(state);
+				action = selectAction(state);
 
-                // Store state-action pair in eligibility trace.
-                saPair = new int[dimSize.length];
-                System.arraycopy(state, 0, saPair, 0, state.length);
-                saPair[state.length] = action;
-                trace.add(saPair);
+				// Store state-action pair in eligibility trace.
+				saPair = new int[dimSize.length];
+				System.arraycopy(state, 0, saPair, 0, state.length);
+				saPair[state.length] = action;
+				trace.add(saPair);
 
-                // Store only 10 traced states.
-                if (trace.size() == 11)
-                    trace.removeElementAt(0);
+				// Store only 10 traced states.
+				if (trace.size() == 11)
+					trace.removeElementAt(0);
 
-                newstate = thisWorld.getNextState(action);
-                reward = thisWorld.getReward();
+				newstate = thisWorld.getNextState(action);
+				reward = thisWorld.getReward();
 
-                max_Q = policy.getMaxQValue(newstate);
-                this_Q = policy.getQValue(state, action);
+				max_Q = policy.getMaxQValue(newstate);
+				this_Q = policy.getQValue(state, action);
 
-                // Calculate new Value for Q
-                delta = reward + gamma * max_Q - this_Q;
-                new_Q = this_Q + alpha * delta;
+				// Calculate new Value for Q
+				delta = reward + gamma * max_Q - this_Q;
+				new_Q = this_Q + alpha * delta;
 
-                policy.setQValue(state, action, new_Q);
+				policy.setQValue(state, action, new_Q);
 
-                // Update values for the trace.
-                for (int e = trace.size() - 2; e >= 0; e--) {
+				// Update values for the trace.
+				for (int e = trace.size() - 2; e >= 0; e--) {
 
-                    saPair = (int[]) trace.get(e);
+					saPair = (int[]) trace.get(e);
 
-                    System.arraycopy(saPair, 0, state, 0, state.length);
-                    action = saPair[state.length];
+					System.arraycopy(saPair, 0, state, 0, state.length);
+					action = saPair[state.length];
 
-                    this_Q = policy.getQValue(state, action);
-                    new_Q = this_Q + alpha * delta * Math.pow(gamma * lambda, (trace.size() - 1 - e));
+					this_Q = policy.getQValue(state, action);
+					new_Q = this_Q + alpha * delta
+							* Math.pow(gamma * lambda, (trace.size() - 1 - e));
 
-                    policy.setQValue(state, action, new_Q);
+					policy.setQValue(state, action, new_Q);
 
-                    // System.out.println("Set Q:" + new_Q + "for " + state[0] +
-                    // "," + state[1] + " action " + action );
-                }
+					// System.out.println("Set Q:" + new_Q + "for " + state[0] +
+					// "," + state[1] + " action " + action );
+				}
 
-                if (random)
-                    trace.removeAllElements();
+				if (random)
+					trace.removeAllElements();
 
-                // Set state to the new state.
-                state = newstate;
+				// Set state to the new state.
+				state = newstate;
 
-            }
+			}
 
-        } // case
-        } // switch
-    } // runEpoch
+		} // case
+		} // switch
+	} // runEpoch
 
-    private int selectAction(int[] state) {
+	private int selectAction(int[] state) {
 
-        double[] qValues = policy.getQValuesAt(state);
-        int selectedAction = -1;
+		double[] qValues = policy.getQValuesAt(state);
+		int selectedAction = -1;
 
-        switch (actionSelection) {
+		switch (actionSelection) {
 
-        case E_GREEDY: {
+		case E_GREEDY: {
 
-            random = false;
-            double maxQ = -Double.MAX_VALUE;
-            int[] doubleValues = new int[qValues.length];
-            int maxDV = 0;
+			random = false;
+			double maxQ = -Double.MAX_VALUE;
+			int[] doubleValues = new int[qValues.length];
+			int maxDV = 0;
 
-            // Explore
-            if (Math.random() < epsilon) {
-                selectedAction = -1;
-                random = true;
-            } else {
+			// Explore
+			if (Math.random() < epsilon) {
+				selectedAction = -1;
+				random = true;
+			} else {
 
-                for (int action = 0; action < qValues.length; action++) {
+				for (int action = 0; action < qValues.length; action++) {
 
-                    if (qValues[action] > maxQ) {
-                        selectedAction = action;
-                        maxQ = qValues[action];
-                        maxDV = 0;
-                        doubleValues[maxDV] = selectedAction;
-                    } else if (qValues[action] == maxQ) {
-                        maxDV++;
-                        doubleValues[maxDV] = action;
-                    }
-                }
+					if (qValues[action] > maxQ) {
+						selectedAction = action;
+						maxQ = qValues[action];
+						maxDV = 0;
+						doubleValues[maxDV] = selectedAction;
+					} else if (qValues[action] == maxQ) {
+						maxDV++;
+						doubleValues[maxDV] = action;
+					}
+				}
 
-                if (maxDV > 0) {
-                    int randomIndex = (int) (Math.random() * (maxDV + 1));
-                    selectedAction = doubleValues[randomIndex];
-                }
-            }
+				if (maxDV > 0) {
+					int randomIndex = (int) (Math.random() * (maxDV + 1));
+					selectedAction = doubleValues[randomIndex];
+				}
+			}
 
-            // Select random action if all qValues == 0 or exploring.
-            if (selectedAction == -1) {
+			// Select random action if all qValues == 0 or exploring.
+			if (selectedAction == -1) {
 
-                // System.out.println( "Exploring ..." );
-                selectedAction = (int) (Math.random() * qValues.length);
-            }
+				// System.out.println( "Exploring ..." );
+				selectedAction = (int) (Math.random() * qValues.length);
+			}
 
-            // Choose new action if not valid.
-            while (!thisWorld.validAction(selectedAction)) {
+			// Choose new action if not valid.
+			while (!thisWorld.validAction(selectedAction)) {
 
-                selectedAction = (int) (Math.random() * qValues.length);
-                // System.out.println( "Invalid action, new one:" +
-                // selectedAction);
-            }
+				selectedAction = (int) (Math.random() * qValues.length);
+				// System.out.println( "Invalid action, new one:" +
+				// selectedAction);
+			}
 
-            break;
-        }
+			break;
+		}
 
-        case SOFTMAX: {
+		case SOFTMAX: {
 
-            int action;
-            double prob[] = new double[qValues.length];
-            double sumProb = 0;
+			int action;
+			double prob[] = new double[qValues.length];
+			double sumProb = 0;
 
-            for (action = 0; action < qValues.length; action++) {
-                prob[action] = Math.exp(qValues[action] / temp);
-                sumProb += prob[action];
-            }
-            for (action = 0; action < qValues.length; action++)
-                prob[action] = prob[action] / sumProb;
+			for (action = 0; action < qValues.length; action++) {
+				prob[action] = Math.exp(qValues[action] / temp);
+				sumProb += prob[action];
+			}
+			for (action = 0; action < qValues.length; action++)
+				prob[action] = prob[action] / sumProb;
 
-            boolean valid = false;
-            double rndValue;
-            double offset;
+			boolean valid = false;
+			double rndValue;
+			double offset;
 
-            while (!valid) {
+			while (!valid) {
 
-                rndValue = Math.random();
-                offset = 0;
+				rndValue = Math.random();
+				offset = 0;
 
-                for (action = 0; action < qValues.length; action++) {
-                    if (rndValue > offset && rndValue < offset + prob[action])
-                        selectedAction = action;
-                    offset += prob[action];
-                    // System.out.println( "Action " + action + " chosen with "
-                    // + prob[action] );
-                }
+				for (action = 0; action < qValues.length; action++) {
+					if (rndValue > offset && rndValue < offset + prob[action])
+						selectedAction = action;
+					offset += prob[action];
+					// System.out.println( "Action " + action + " chosen with "
+					// + prob[action] );
+				}
 
-                if (thisWorld.validAction(selectedAction))
-                    valid = true;
-            }
-            break;
+				if (thisWorld.validAction(selectedAction))
+					valid = true;
+			}
+			break;
 
-        }
-        }
-        return selectedAction;
-    }
+		}
+		}
+		return selectedAction;
+	}
 
-    /*
-     * private double getMaxQValue( int[] state, int action ) {
-     * 
-     * double maxQ = 0;
-     * 
-     * double[] qValues = policy.getQValuesAt( state );
-     * 
-     * for( action = 0 ; action < qValues.length ; action++ ) { if(
-     * qValues[action] > maxQ ) { maxQ = qValues[action]; } } return maxQ; }
-     */
+	/*
+	 * private double getMaxQValue( int[] state, int action ) {
+	 * 
+	 * double maxQ = 0;
+	 * 
+	 * double[] qValues = policy.getQValuesAt( state );
+	 * 
+	 * for( action = 0 ; action < qValues.length ; action++ ) { if(
+	 * qValues[action] > maxQ ) { maxQ = qValues[action]; } } return maxQ; }
+	 */
 
-    public RLPolicy getPolicy() {
+	public RLPolicy getPolicy() {
 
-        return policy;
-    }
+		return policy;
+	}
 
-    public void setAlpha(double a) {
+	public void setAlpha(double a) {
 
-        if (a >= 0 && a < 1)
-            alpha = a;
-    }
+		if (a >= 0 && a < 1)
+			alpha = a;
+	}
 
-    public double getAlpha() {
+	public double getAlpha() {
 
-        return alpha;
-    }
+		return alpha;
+	}
 
-    public void setGamma(double g) {
+	public void setGamma(double g) {
 
-        if (g > 0 && g < 1)
-            gamma = g;
-    }
+		if (g > 0 && g < 1)
+			gamma = g;
+	}
 
-    public double getGamma() {
+	public double getGamma() {
 
-        return gamma;
-    }
+		return gamma;
+	}
 
-    public void setEpsilon(double e) {
+	public void setEpsilon(double e) {
 
-        if (e > 0 && e < 1)
-            epsilon = e;
-    }
+		if (e > 0 && e < 1)
+			epsilon = e;
+	}
 
-    public double getEpsilon() {
+	public double getEpsilon() {
 
-        return epsilon;
-    }
+		return epsilon;
+	}
 
-    public void setEpisodes(int e) {
+	public void setEpisodes(int e) {
 
-        if (e > 0)
-            epochs = e;
-    }
+		if (e > 0)
+			epochs = e;
+	}
 
-    public int getEpisodes() {
+	public int getEpisodes() {
 
-        return epochs;
-    }
+		return epochs;
+	}
 
-    public void setActionSelection(int as) {
+	public void setActionSelection(int as) {
 
-        switch (as) {
+		switch (as) {
 
-        case SOFTMAX: {
-            actionSelection = SOFTMAX;
-            break;
-        }
-        case E_GREEDY:
-        default: {
-            actionSelection = E_GREEDY;
-        }
+		case SOFTMAX: {
+			actionSelection = SOFTMAX;
+			break;
+		}
+		case E_GREEDY:
+		default: {
+			actionSelection = E_GREEDY;
+		}
 
-        }
-    }
+		}
+	}
 
-    public int getActionSelection() {
+	public int getActionSelection() {
 
-        return actionSelection;
-    }
+		return actionSelection;
+	}
 
-    public void setLearningMethod(int lm) {
+	public void setLearningMethod(int lm) {
 
-        switch (lm) {
+		switch (lm) {
 
-        case SARSA: {
-            learningMethod = SARSA;
-            break;
-        }
-        case Q_LAMBDA: {
-            learningMethod = Q_LAMBDA;
-            break;
-        }
-        case Q_LEARNING:
-        default: {
-            learningMethod = Q_LEARNING;
-        }
-        }
-    }
+		case SARSA: {
+			learningMethod = SARSA;
+			break;
+		}
+		case Q_LAMBDA: {
+			learningMethod = Q_LAMBDA;
+			break;
+		}
+		case Q_LEARNING:
+		default: {
+			learningMethod = Q_LEARNING;
+		}
+		}
+	}
 
-    public int getLearningMethod() {
+	public int getLearningMethod() {
 
-        return learningMethod;
-    }
+		return learningMethod;
+	}
 
-    // AK: let us clear the policy
-    public RLPolicy newPolicy() {
-        policy = new RLPolicy(dimSize);
-        // Initializing the policy with the initial values defined by the world.
-        policy.initValues(thisWorld.getInitValues());
-        return policy;
-    }
+	// AK: let us clear the policy
+	public RLPolicy newPolicy() {
+		policy = new RLPolicy(dimSize);
+		// Initializing the policy with the initial values defined by the world.
+		policy.initValues(thisWorld.getInitValues());
+		return policy;
+	}
 }
