@@ -545,19 +545,17 @@ public class CatAndMouseWorld implements RLWorld {
                 } else {
                     return 2;
                 }
-            } else {
-                return 1;
             }
         }   
         
         Random rn = new Random();
         int tes = rn.nextInt(10);
-        if (tes <= 4) {
-            return 1;
-        } else if (tes <= 7){
+        if (tes <= 6) {
             return 0;
-        } else {
+        } else if (tes <= 9){
             return 2;
+        } else {
+            return 1;
         }
         
     }
