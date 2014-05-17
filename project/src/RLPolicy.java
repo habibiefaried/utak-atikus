@@ -32,7 +32,7 @@ public class RLPolicy {
         int actualdim = 0;
         int state[] = new int[dimSize.length - 1];
 
-        System.out.println("States: " + states);
+        //System.out.println("States: " + states);
         for (int j = 0; j < states; j++) {
 
             qValues = (double[]) myQValues(state);
@@ -144,35 +144,34 @@ public class RLPolicy {
 		qValues = myQValues( state );
 		
 		for( int action = 0 ; action < qValues.length ; action++ ) {
-		    //System.out.println( "STATE: [" + state[0] + "," + state[1] + "]" ); 
-		    //System.out.println( "action:qValue, maxQ " + action + ":" + qValues[action] + "," + maxQ );
+//		    System.out.println( "STATE: [" + state[0] + "," + state[1] + "]" ); 
+//		    System.out.println( "action:qValue, maxQ " + action + ":" + qValues[action] + "," + maxQ );
 		    
 		    if( qValues[action] > maxQ ) {
-			selectedAction = action;
-			maxQ = qValues[action];
-			maxDV = 0;
-			doubleValues[maxDV] = selectedAction;
+				selectedAction = action;
+				maxQ = qValues[action];
+				maxDV = 0;
+				doubleValues[maxDV] = selectedAction;
 		    }
 		    else if( qValues[action] == maxQ ) {
-			maxDV++;
-			doubleValues[maxDV] = action; 
+				maxDV++;
+				doubleValues[maxDV] = action; 
 		    }
 		}
 		
 		if( maxDV > 0 ) {
-		    //System.out.println( "DOUBLE values, random selection, maxdv =" + maxDV );
+		    System.out.println( "DOUBLE values, random selection, maxdv =" + maxDV );
 		    int randomIndex = (int) ( Math.random() * ( maxDV + 1 ) );
 		    selectedAction = doubleValues[ randomIndex ];
 		}
 		
 		
 		if( selectedAction == -1 ) {
-		    //System.out.println("RANDOM Choice !" );
+		    System.out.println("RANDOM Choice !" );
 		    selectedAction = (int) ( Math.random() * qValues.length );
 		}
 		
-		return selectedAction;
-	  
+		return selectedAction;	  
     }
     
     public int getBestAction(int[] state) {
