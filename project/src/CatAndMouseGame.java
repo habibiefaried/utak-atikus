@@ -51,32 +51,33 @@ public class CatAndMouseGame extends Thread {
             // System.out.println("Game playing. Making move.");
             int action = -1;
             if (mousetype == GREEDY) {
-            	System.out.println("CatAndMouseGame.java:GREEDY:runGame");
-                action = policy.getBestAction(world.getStateBaru());
-                //action = world.mouseAction();
-                
-                //Random rnd = new Random();
-                //action = rnd.nextInt(3);
-                //switch (action) {
+                System.out.println("CatAndMouseGame.java:GREEDY:runGame");
+                // action = policy.getBestAction(world.getStateBaru());
+                action = world.mouseAction();
+
+                // Random rnd = new Random();
+                // action = rnd.nextInt(3);
+                // switch (action) {
                 // case 0: System.out.println("left"); break;
                 // case 1: System.out.println("up"); break;
                 // case 2: System.out.println("right"); break;
-                //}
+                // }
             } else if (mousetype == SMART) {
-            	System.out.println("CatAndMouseGame.java:SMART:runGame");
-            	action = policy.getSmartAction(world.getStateBaru());
-//              action = policy.getBestAction(world.getStateBaru());
-                //Random rnd = new Random();
-                //action = rnd.nextInt(3);
-                //switch (action) {
+                System.out.println("CatAndMouseGame.java:SMART:runGame");
+                // action = policy.getSmartAction(world.getStateBaru());
+                action = policy.getBestAction(world.getStateBaru());
+                // Random rnd = new Random();
+                // action = rnd.nextInt(3);
+                // switch (action) {
                 // case 0: System.out.println("left"); break;
                 // case 1: System.out.println("up"); break;
                 // case 2: System.out.println("right"); break;
-                //}
+                // }
             } else {
                 System.err.println("Invalid mouse type:" + mousetype);
             }
-//            System.out.println(world.mx + ", " + world.my + ", arah: "+world.arah);
+            // System.out.println(world.mx + ", " + world.my +
+            // ", arah: "+world.arah);
             world.getNextState(action);
             a.mousescore = world.mousescore;
 

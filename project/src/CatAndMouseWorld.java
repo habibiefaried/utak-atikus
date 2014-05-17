@@ -423,11 +423,12 @@ public class CatAndMouseWorld implements RLWorld {
         for (int i = 0; i < ConfigReader.getInstance().getJumlahKucing(); i++) {
             if (catCoord.get(i).x == mx && catCoord.get(i).y == my) {
                 System.out.println("Game OVER");
-//                currentEpisode++;
-//                if (currentEpisode > 10) {
-//                    System.out.println("10 Episode done");
-//                    currentEpisode = 0;
-//                }
+                System.out.println(ConfigReader.getInstance().getJumlahEpisode());
+                if (currentEpisode < ConfigReader.getInstance().getJumlahEpisode() - 1) {
+                    currentEpisode++;
+                } else {
+                    currentEpisode = 0;
+                }
                 return true;
             }
         }
@@ -440,11 +441,14 @@ public class CatAndMouseWorld implements RLWorld {
         }
         if (allcheese) {
             System.out.println("Game OVER");
-//            currentEpisode++;
-//            if (currentEpisode > 10) {
-//                System.out.println("10 Episode done");
-//                currentEpisode = 0;
-//            }
+            System.out.println(ConfigReader.getInstance().getJumlahEpisode());
+            System.out.println("sonny");
+            if (currentEpisode < ConfigReader.getInstance().getJumlahEpisode() - 1) {
+                currentEpisode++;
+            } else {
+                currentEpisode = 0;
+            }
+            System.out.println("david");
             return true;
         }
         return false;
@@ -550,9 +554,9 @@ public class CatAndMouseWorld implements RLWorld {
         
         Random rn = new Random();
         int tes = rn.nextInt(10);
-        if (tes <= 6) {
+        if (tes <= 3) {
             return 0;
-        } else if (tes <= 9){
+        } else if (tes <= 6){
             return 2;
         } else {
             return 1;

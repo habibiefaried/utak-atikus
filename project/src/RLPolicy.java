@@ -183,11 +183,6 @@ public class RLPolicy {
         qValues = myQValues(state);
 
         for (int action = 0; action < qValues.length; action++) {
-            // System.out.println( "STATE: [" + state[0] + "," + state[1] + "]"
-            // );
-            // System.out.println( "action:qValue, maxQ " + action + ":" +
-            // qValues[action] + "," + maxQ );
-
             if (qValues[action] > maxQ) {
                 selectedAction = action;
                 maxQ = qValues[action];
