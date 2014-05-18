@@ -175,6 +175,9 @@ public class SwingApplet extends JApplet implements ActionListener, Runnable {
         game.start();
 
         // set text fields on panels
+        trainWorld.deathPenalty = MapReader.jmlBaris + MapReader.jmlKolom;
+        trainWorld.cheeseReward = MapReader.jmlBaris + MapReader.jmlKolom;
+                
         penalty.setText(Integer.toString(trainWorld.deathPenalty));
         reward.setText(Integer.toString(trainWorld.cheeseReward));
         alpha.setText(Double.toString(rl.getAlpha()));
@@ -353,7 +356,7 @@ public class SwingApplet extends JApplet implements ActionListener, Runnable {
 
         worldPane.add(chooseWorld(), BorderLayout.CENTER);
         // worldPane.add(customWorld(), BorderLayout.EAST);
-        JButton startbutt = new JButton("Momo to start!");
+        JButton startbutt = new JButton("Click to start!");
 
         startbutt.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
